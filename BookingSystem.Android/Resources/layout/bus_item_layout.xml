@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/btn_bus_info"
+        android:layout_width="24dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        app:srcCompat="@drawable/ic_more_vert_black_18dp" />
+
+    <booking.system.AvatarDisplay
+        android:id="@+id/img_bus_icon"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:placeholder="@drawable/bus"
+        app:borderRadius="2dp"
+        app:borderColor="#d7d7d7"
+        app:shadow="false"
+        app:backgroundColor="#FFF"
+        app:viewSize="44dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/img_bus_icon"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/lb_bus_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp"
+            tools:text="Tatra Volvo 12X" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Model:" />
+
+            <TextView
+                android:id="@+id/lb_bus_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textColor="@color/primary_text"
+                tools:text="Default" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Seats:" />
+
+            <TextView
+                android:id="@+id/lb_bus_seats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textColor="@color/primary_text"
+                tools:text="1-20" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

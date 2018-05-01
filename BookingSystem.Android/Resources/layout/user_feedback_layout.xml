@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/lb_feedback_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            tools:text="Hello there, I've been working on some serious stuff. I know this is really a good direction and feed the hungry" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/img_user"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_person_black_18dp" />
+
+            <TextView
+                android:id="@+id/lb_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="false"
+                android:layout_alignTop="@+id/img_user"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/img_user"
+                android:textColor="@color/primary_text"
+                tools:text="Kofi Nyame " />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/lb_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="left|center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text="21st December 2018"
+            android:textColor="@color/secondary_text" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

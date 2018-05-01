@@ -1,0 +1,15 @@
+﻿[
+  {
+    "Id": 1,
+    "Name": "Tatra",
+    "Seats": "1-50",
+    "Model": "Default"
+  },
+  {
+    "Id": 2,
+    "Name": "Ayalolo",
+    "Seats": "1-90",
+    "Model": "Default"
+  }
+
+]

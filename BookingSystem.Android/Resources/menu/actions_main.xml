@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title=""
+        android:id="@+id/search_bar"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_user_profile"
+        android:title="User Profile" />
+    <item
+        android:id="@+id/action_about"
+        android:title="About" />
+
+  <item android:id="@+id/action_signout"
+        android:title="Sign Out"/>
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh_white_18dp"
+        android:title="Refresh"
+        app:showAsAction="always" />
+</menu>

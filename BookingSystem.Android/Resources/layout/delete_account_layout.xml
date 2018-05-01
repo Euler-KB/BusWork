@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/abc_dialog_padding_material">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You are about to delete your account permanently. This will result in clearing all your history and removing all associated data."
+        android:textColor="@color/primary_text"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="NOTE: This operation is irriversible"
+        android:textColor="#f20000"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_delete_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#e44848"
+        android:text="Delete Account"
+        android:textColor="@color/icons" />
+</LinearLayout>

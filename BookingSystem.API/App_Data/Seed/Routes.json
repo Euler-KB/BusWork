@@ -1,0 +1,56 @@
+﻿[
+  {
+    "BusId": 1,
+    "From": "Accra",
+    "Destination": "Kumasi",
+    "Cost": 20,
+    "Comments": "",
+    "DepartureTime": "4/4/2018",
+    "ArrivalTime": "4/5/2018"
+  },
+	{
+		"BusId": 1,
+		"From": "Kaneshie",
+		"Destination": "Nsawam",
+		"Cost":32,
+		"DepartureTime": "2/16/2018",
+		"ArrivalTime": "3/20/2018",
+		"Comments": ""
+	},
+	{
+		"BusId": 1,
+		"From": "Tamale",
+		"Destination": "East Tafo",
+		"Cost": 16,
+		"Comments": "",
+		"DepartureTime": "4/4/2018",
+		"ArrivalTime": "5/5/2018"
+	},
+	{
+		"BusId": 2,
+		"From": "Taifa",
+		"Destination": "Dome",
+		"Cost": 12,
+		"DepartureTime": "2/16/2018",
+		"ArrivalTime": "7/20/2018",
+		"Comments": ""
+	},
+	{
+		"BusId": 2,
+		"From": "Brong Ahafo",
+		"Destination": "Ho",
+		"Cost": 20,
+		"Comments": "",
+		"DepartureTime": "4/4/2018",
+		"ArrivalTime": "6/5/2018"
+	},
+	{
+		"BusId": 2,
+		"From": "Bee",
+		"Destination": "Nsawam",
+		"Cost": 10,
+		"DepartureTime": "4/20/2018",
+		"ArrivalTime": "5/22/2018",
+		"Comments": ""
+	}
+]

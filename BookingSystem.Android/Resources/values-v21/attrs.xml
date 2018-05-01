@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MultiSpinnerSearch">
+        <attr name="hintText" format="string"/>
+        <attr name="emptyText" format="string"/>
+    </declare-styleable>
+</resources>

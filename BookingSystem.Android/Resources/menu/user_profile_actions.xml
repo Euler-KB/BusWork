@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_manage_wallets"
+        android:icon="@drawable/ic_account_balance_wallet_white_18dp"
+        android:title="Manage Wallet"
+        app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/action_change_username"
+        android:title="Change Username" />
+    <item
+        android:id="@+id/action_change_fullname"
+        android:title="Change Full Name" />
+    <item
+        android:id="@+id/action_change_email"
+        android:title="Change Email" />
+    <item
+        android:id="@+id/action_change_phone"
+        android:title="Change Phone" />
+    <item
+        android:id="@+id/action_change_password"
+        android:title="Change Password" />
+    <item
+        android:id="@+id/action_delete_account"
+        android:title="Delete Account" />
+</menu>

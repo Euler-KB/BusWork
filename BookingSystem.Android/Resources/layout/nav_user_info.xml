@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primary_dark"
+    android:orientation="vertical"
+    android:paddingBottom="20dp">
+
+    <booking.system.AvatarDisplay
+        android:id="@+id/user_image_frame"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="40dp"/>
+
+    <TextView
+        android:id="@+id/lb_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/primary_light"
+        tools:text="Hello User" />
+
+</LinearLayout>

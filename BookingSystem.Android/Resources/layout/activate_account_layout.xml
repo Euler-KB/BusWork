@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:cardBackgroundColor="@color/primary_dark"
+        app:cardElevation="4dp"
+        app:contentPadding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activate Account"
+                android:textColor="@color/icons"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="To proceed, we'll need you to activate your account. Enter the six digit code you received here"
+                android:textColor="@color/primary_light" />
+
+            <EditText
+                android:id="@+id/tb_confirm_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Enter six digit activation code here..."
+                android:padding="10dp"
+                android:inputType="text"
+                android:textColor="@color/icons"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btn_activate_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/accent"
+                android:text="Activate Account"
+                android:textColor="@color/icons" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

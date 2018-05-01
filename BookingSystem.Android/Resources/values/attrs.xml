@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DateTimeSelector">
+        <attr name="title" format="string"/>
+        <attr name="hint" format="string"/>
+        <attr name="date" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="AvatarDisplay">
+        <attr name="placeholder" format="reference"/>
+        <attr name="viewSize" format="dimension"/>
+        <attr name="src" format="reference"/>
+        <attr name="borderColor" format="color"/>
+        <attr name="shadowColor" format="color"/>
+        <attr name="borderRadius" format="dimension"/>
+        <attr name="shadow" format="boolean"/>
+        <attr name="shadowRadius" format="dimension"/>
+        <attr name="shadowOffsetX" format="dimension"/>
+        <attr name="shadowOffsetY" format="dimension"/>
+        <attr name="backgroundColor" format="color"/>
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Hello">Hello World, Click Me!</string>
+    <string name="AppName">Ticket Booking System</string>
+    <string name="ForgotPasswordLabel"><u>Forgot Password</u></string>
+    <string name="AboutInfo">
+        This application makes ticket booking for local transport seamless. We support mobile money payment and also deliver you with real time alerts for your transport needs. We would love to hear from your usage experience. Send us a feedback message to improve our services
+    </string>
+
+    <string name="PhoneConfirmMsg">You\'ve been sent a confirmation code to the phone number <b>{0}</b>. Kindly check and enter the six digit code received to complete the procedure.</string>
+    <string name="EmailConfirmMsg">A confirmation code has been sent to the email <b>{0}</b>. Kindly check and enter the six digit code received to complete the procedure.</string>
+    <string name="ChangeUsernameHint">Enter your new username below. \r<b>Note</b>: Operation will fail if the username is already used by someone else</string>
+
+    <string-array name="networks">
+        <item>MTN</item>
+        <item>Tigo</item>
+        <item>Vodafone</item>
+        <item>Airtel</item>
+    </string-array>
+
+</resources>

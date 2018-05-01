@@ -1,0 +1,18 @@
+﻿[
+  {
+    "Username": "Admin2K18",
+    "FullName": "Damian Marley",
+    "Email": "eulergkb@gmail.com",
+    "Phone": "0209153453",
+    "Password": "__admin2K18_password",
+    "Role": "Admin"
+  },
+  {
+    "Username": "User2K18",
+    "FullName": "Leonardo Euler",
+    "Email": "euler-kb@live.com",
+    "Phone": "0501583982",
+    "Password": "__user2K18_password",
+    "Role": "User"
+  }
+]

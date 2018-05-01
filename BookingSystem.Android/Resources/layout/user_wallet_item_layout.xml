@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/wallet_provider_img"
+            android:layout_width="128dp"
+            android:layout_height="64dp"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/lb_wallet_provider_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/wallet_provider_img"
+            android:textColor="@color/primary_text"
+            android:textSize="18sp"
+            tools:text="MTN Mobile Money" />
+
+        <TextView
+            android:id="@+id/lb_wallet_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lb_wallet_provider_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/wallet_provider_img"
+            android:textColor="@color/primary_text"
+            tools:text="0201231234" />
+
+        <ImageView
+            android:id="@+id/btn_wallet_more"
+            android:layout_width="24dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_more_vert_black_18dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_check_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_gravity="bottom|left"
+        android:tint="#1d9902"
+        app:srcCompat="@drawable/ic_check_circle_white_18pt" />
+
+</FrameLayout>
