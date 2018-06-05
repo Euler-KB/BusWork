@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 
 namespace BookingSystem.API.Services.SMS
 {
@@ -10,18 +12,27 @@ namespace BookingSystem.API.Services.SMS
     {
         private string accountSID;
         private string authToken;
-        private string dispatchContact;
+        private PhoneNumber dispatchContact;
 
-        public TwilioClient(string accountSID , string authToken, string contact)
+        public TwilioClient(string accountSID, string authToken, string contact)
         {
             this.accountSID = accountSID;
             this.authToken = authToken;
-            this.dispatchContact = contact;
+            this.dispatchContact = new PhoneNumber(contact);
+
+            //  #
+            Twilio.TwilioClient.Init(accountSID, authToken);
         }
 
         public Task SendAsync(SendSMSOptions options)
         {
-            return Task.FromResult(0);
+            var from = options.Subject != null ? new PhoneNumber(options.Subject) : dispatchContact;
+            return Task.WhenAll(options.Destinations.Select(x => MessageResource.CreateAsync(new CreateMessageOptions(new PhoneNumber(x))
+            {
+                Body = options.Message,
+                From = from
+            })));
         }
+
     }
 }

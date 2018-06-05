@@ -25,7 +25,7 @@ namespace BookingSystem.Android
         protected CustomApplication(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
         {
 
-#if DEBUG
+#if !DEBUG
             void ShowError(Exception ex)
             {
                 if (CurrentActivity != null)

@@ -49,7 +49,7 @@ namespace BookingSystem.Android
             (Dialog as AlertDialog)?.GetButton((int)DialogButtonType.Positive).SetOnClickListener(new ClickListener(async delegate
             {
                 string provider = networkProvider[networkProviderSpinner.SelectedItemPosition];
-                string value = tbPhoneNo.EditText.Text;
+                string value = tbPhoneNo.EditText.TrimInput();
 
                 //  Validate phone no
                 if (tbPhoneNo.SetError(InputHandler.IsValidPhone(value) ? null : "Invalid phone number"))

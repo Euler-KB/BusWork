@@ -24,6 +24,8 @@ namespace BookingSystem.Android
     [Activity(Label = "Create Bus")]
     public class CreateBusActivity : BaseActivity
     {
+        public static event EventHandler<BusInfo> OnCreate;
+
         public const int ImagePickRequestCode = 0x45;
         private bool isEditing;
         private BusInfo bus;
@@ -102,6 +104,8 @@ namespace BookingSystem.Android
 
                                 if (response.Successful)
                                 {
+                                    SetResult(Result.Ok);
+
                                     var createdBus = await response.GetDataAsync<BusInfo>();
 
                                     //  Upload image if any
@@ -119,7 +123,7 @@ namespace BookingSystem.Android
 
                                     }
 
-                                    SetResult(Result.Ok);
+                                    OnCreate?.Invoke(this, createdBus);
                                     Finish();
                                 }
                                 else

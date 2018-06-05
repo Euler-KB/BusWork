@@ -37,20 +37,50 @@ namespace BookingSystem.API
 
         static void RegisterSMSService(UnityContainer container)
         {
-            string clientId = ConfigurationManager.AppSettings["TwilioClientId"];
-            string dispatchContact = ConfigurationManager.AppSettings["TwilioDispatchContact"];
-            string clientSecret = ConfigurationManager.AppSettings["TwilioClientSecret"];
-            container.RegisterInstance<ISMSService>(new TwilioClient(clientId, clientSecret, dispatchContact));
+            switch (ConfigurationManager.AppSettings["SMS_ENGINE"])
+            {
+                case "MNotify":
+                    {
+
+                        string key = ConfigurationManager.AppSettings["SMS_ENGINE"];
+                        container.RegisterInstance<ISMSService>(new MNotify(key));
+                    }
+                    break;
+                case "Twilio":
+                    {
+                        string clientId = ConfigurationManager.AppSettings["TwilioClientId"];
+                        string dispatchContact = ConfigurationManager.AppSettings["TwilioDispatchContact"];
+                        string clientSecret = ConfigurationManager.AppSettings["TwilioClientSecret"];
+                        container.RegisterInstance<ISMSService>(new TwilioClient(clientId, clientSecret, dispatchContact));
+                    }
+                    break;
+            }
+
         }
 
         static void RegisterPaymentService(UnityContainer container)
         {
+            switch (ConfigurationManager.AppSettings["PAYMENT_PROCESSOR"])
+            {
+                case "AMS":
+                    {
+                        string appId = ConfigurationManager.AppSettings["AMSPAYMENT_APP_ID"];
+                        string apiKey = ConfigurationManager.AppSettings["AMSPAYMENT_API_KEY"];
+                        container.RegisterInstance<IPaymentService>(new AMSPaymentService(appId, apiKey));
+                    }
+                    break;
 
-            string clientId = ConfigurationManager.AppSettings["HubtelClientId"];
-            string clientSecret = ConfigurationManager.AppSettings["HubtelClientSecret"];
-            string merchatnAccountNo = ConfigurationManager.AppSettings["HubtelMerchantAccount"];
+                case "Hubtel":
+                    {
+                        string clientId = ConfigurationManager.AppSettings["HubtelClientId"];
+                        string clientSecret = ConfigurationManager.AppSettings["HubtelClientSecret"];
+                        string merchatnAccountNo = ConfigurationManager.AppSettings["HubtelMerchantAccount"];
 
-            container.RegisterInstance<IPaymentService>(new HubtelPaymentService(clientId, clientSecret, merchatnAccountNo));
+                        container.RegisterInstance<IPaymentService>(new HubtelPaymentService(clientId, clientSecret, merchatnAccountNo));
+                    }
+                    break;
+            }
+
         }
     }
 }

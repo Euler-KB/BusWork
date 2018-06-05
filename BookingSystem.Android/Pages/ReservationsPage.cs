@@ -109,26 +109,24 @@ namespace BookingSystem.Android.Pages
         public void OnAddItem()
         {
             //  Book reservation here
-            StartActivityForResult(new Intent(Activity, typeof(CreateReservationActivity)), 0x20);
-        }
-
-        public override async void OnActivityResult(int requestCode, int resultCode, Intent data)
-        {
-            if (requestCode == 0x20 && resultCode == (int)Result.Ok)
-            {
-                //  Refresh view
-                await LoadReservations();
-            }
+            StartActivity(new Intent(Activity, typeof(CreateReservationActivity)));
         }
 
         public override void OnResume()
         {
+            CreateReservationActivity.OnReservationCreate += OnReservationCreated;
             timer.Start();
             base.OnResume();
         }
 
+        private async void OnReservationCreated(object sender, ReservationInfo e)
+        {
+            await LoadReservations();
+        }
+
         public override void OnPause()
         {
+            CreateReservationActivity.OnReservationCreate -= OnReservationCreated;
             timer.Stop();
             base.OnPause();
         }

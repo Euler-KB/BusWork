@@ -23,6 +23,8 @@ namespace BookingSystem.Android
     [Activity(Label = "Book Reservation")]
     public class CreateReservationActivity : BaseActivity
     {
+        public static event EventHandler<ReservationInfo> OnReservationCreate;
+
         public const int CreateWalletRequestCode = 0x54;
 
         private Spinner busesSpinner;
@@ -165,9 +167,9 @@ namespace BookingSystem.Android
                     {
                         if (await LoadBusRoutes(item.Id))
                         {
-                            if(!isTargetApplied && targetRouteId != null)
+                            if (!isTargetApplied && targetRouteId != null)
                             {
-                                for(int i = 0; i < routeAdapter.Items.Count; i++)
+                                for (int i = 0; i < routeAdapter.Items.Count; i++)
                                 {
                                     if (routeAdapter.Items[i].Id == targetRouteId)
                                     {
@@ -484,6 +486,9 @@ namespace BookingSystem.Android
 
                                     if (response.Successful)
                                     {
+                                        //
+                                        OnReservationCreate?.Invoke(this,  await response.GetDataAsync<ReservationInfo>() );
+
                                         //  Other's rely on this to refresh
                                         SetResult(Result.Ok);
 

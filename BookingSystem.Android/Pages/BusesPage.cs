@@ -169,6 +169,23 @@ namespace BookingSystem.Android.Pages
             CreateBusActivity.Navigate(Activity, requestCode: 0x500);
         }
 
+        void OnBusCreated(object sender , BusInfo busInfo)
+        {
+            Refresh();
+        }
+
+        public override void OnResume()
+        {
+            CreateBusActivity.OnCreate += OnBusCreated;
+            base.OnResume();
+        }
+
+        public override void OnPause()
+        {
+            CreateBusActivity.OnCreate -= OnBusCreated;
+            base.OnPause();
+        }
+
         public override void OnActivityResult(int requestCode, int resultCode, Intent data)
         {
             if (requestCode == 0x500 && resultCode == (int)Result.Ok)

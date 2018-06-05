@@ -151,6 +151,8 @@ namespace BookingSystem.API.Services.Payment
         private string merchantAccountId;
         private HttpClient httpClient;
 
+        public bool CanRefund => true;
+
         public HubtelPaymentService(string clientId, string secret, string merchantAccountNo)
         {
             this.clientId = clientId;

@@ -104,16 +104,16 @@ namespace BookingSystem.Android.Helpers
                 return "Successful";
             else
             {
+
                 if (response.ConnectionError)
                     return Resources.ERR_MSG_CONNECTION;
-                else if (response.Timeout)
+
+                if (response.Timeout)
                     return Resources.ERR_MSG_TIMEOUT;
                 else
                 {
                     if (response.BadRequest)
                         return response.GetResponseMessage();
-
-                    global::Android.Util.Log.Debug("Booking System", response.GetResponseMessage());
 
                     return Resources.ERR_MSG_SERVER_ERROR;
                 }

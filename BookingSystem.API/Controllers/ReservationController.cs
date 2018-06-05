@@ -229,10 +229,12 @@ namespace BookingSystem.API.Controllers
 
             user.Reservations.Add(reservation);
 
+
+            var finalCost = route.Cost * seats.Length;
             //  Charge for reservation here
             var txn = await payment.Charge(new ChargeOptions()
             {
-                Amount = route.Cost * seats.Length,
+                Amount = finalCost + (await payment.CalculateCharges(finalCost, wallet, TransactionType.Charge)),
                 FeesOnCustomer = true,
                 AdditionalToken = model.AdditionalToken,
                 Email = user.Email,
@@ -262,7 +264,7 @@ namespace BookingSystem.API.Controllers
 
                     //  Check reservation has been successfully paid for
                     var payTxn = reservation.Transactions.FirstOrDefault(x => x.Status == TransactionStatus.Successful && x.Type == TransactionType.Charge);
-                    if (payTxn != null)
+                    if (payTxn != null && payment.CanRefund)
                     {
                         //  Refund reservation here
                         var txn = await payment.Refund(payTxn);

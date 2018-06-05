@@ -9,6 +9,8 @@ namespace BookingSystem.API.Services.Payment
 {
     public interface IPaymentService
     {
+        bool CanRefund { get; }
+
         Task<Transaction> Charge(ChargeOptions options, UserWallet wallet);
 
         Task<Transaction> Refund(Transaction txn);
