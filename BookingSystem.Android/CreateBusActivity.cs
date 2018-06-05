@@ -24,7 +24,7 @@ namespace BookingSystem.Android
     [Activity(Label = "Create Bus")]
     public class CreateBusActivity : BaseActivity
     {
-        public static event EventHandler<BusInfo> OnCreate;
+        public static event EventHandler<BusInfo> OnBusCreated;
 
         public const int ImagePickRequestCode = 0x45;
         private bool isEditing;
@@ -123,7 +123,7 @@ namespace BookingSystem.Android
 
                                     }
 
-                                    OnCreate?.Invoke(this, createdBus);
+                                    OnBusCreated?.Invoke(this, createdBus);
                                     Finish();
                                 }
                                 else
@@ -226,7 +226,7 @@ namespace BookingSystem.Android
                     }
 
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
                     Toast.MakeText(this, "Invalid image selected", ToastLength.Short).Show();
                 }

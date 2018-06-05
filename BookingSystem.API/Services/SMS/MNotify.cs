@@ -24,6 +24,7 @@ namespace BookingSystem.API.Services.SMS
             {
                 foreach (var phone in options.Destinations)
                 {
+
                     await httpClient.GetAsync($"https://apps.mnotify.net/smsapi?key={key}&to={phone}&msg={HttpUtility.UrlEncode(options.Message)}&sender_id={(options.Subject ?? subject)}");
                 }
 

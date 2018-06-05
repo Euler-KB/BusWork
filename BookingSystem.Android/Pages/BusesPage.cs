@@ -176,13 +176,13 @@ namespace BookingSystem.Android.Pages
 
         public override void OnResume()
         {
-            CreateBusActivity.OnCreate += OnBusCreated;
+            CreateBusActivity.OnBusCreated += OnBusCreated;
             base.OnResume();
         }
 
         public override void OnPause()
         {
-            CreateBusActivity.OnCreate -= OnBusCreated;
+            CreateBusActivity.OnBusCreated -= OnBusCreated;
             base.OnPause();
         }
 
