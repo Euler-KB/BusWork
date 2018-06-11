@@ -210,7 +210,7 @@ namespace BookingSystem.Android.Pages
             });
         }
 
-        protected virtual Task OnRefreshViewAsync()
+        public virtual Task OnRefreshViewAsync()
         {
             return Task.FromResult(0);
         }

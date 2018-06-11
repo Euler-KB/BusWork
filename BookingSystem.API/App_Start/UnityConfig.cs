@@ -41,7 +41,6 @@ namespace BookingSystem.API
             {
                 case "MNotify":
                     {
-
                         string key = ConfigurationManager.AppSettings["SMS_ENGINE"];
                         container.RegisterInstance<ISMSService>(new MNotify(key));
                     }
@@ -62,6 +61,22 @@ namespace BookingSystem.API
         {
             switch (ConfigurationManager.AppSettings["PAYMENT_PROCESSOR"])
             {
+                case "SlydePay":
+                    {
+                        string apiVer = ConfigurationManager.AppSettings["SPAY_API_VER"];
+                        string merchantEmail = ConfigurationManager.AppSettings["SPAY_EMAIL"];
+                        string apiKey = ConfigurationManager.AppSettings["SPAY_API_KEY"];
+
+                        container.RegisterInstance<IPaymentService>(new SlydePayPayment(apiVer, merchantEmail, apiKey,
+#if DEBUG
+                            true
+#else
+                            false
+#endif
+                            ));
+
+                    }
+                    break;
                 case "AMS":
                     {
                         string appId = ConfigurationManager.AppSettings["AMSPAYMENT_APP_ID"];

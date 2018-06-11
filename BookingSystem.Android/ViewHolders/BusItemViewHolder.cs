@@ -21,6 +21,8 @@ namespace BookingSystem.Android.ViewHolders
 {
     public partial class ItemHolders
     {
+        public static event EventHandler<BusInfo> OnBusRemoved;
+
         public static readonly IList<ViewBind> BusItemBindings = new List<ViewBind>()
         {
             new PropertyBind<AvatarDisplay,BusInfo>(Resource.Id.img_bus_icon,(view,bus) =>
@@ -71,7 +73,7 @@ namespace BookingSystem.Android.ViewHolders
                                         var response = await proxy.ExecuteAsync(API.Endpoints.BusesEndpoints.Delete(bus.Id));
                                         if(response.Successful)
                                         {
-
+                                            OnBusRemoved?.Invoke(BusItemBindings , bus);
                                         }
                                         else
                                         {

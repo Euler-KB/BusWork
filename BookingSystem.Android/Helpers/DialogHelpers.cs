@@ -99,7 +99,7 @@ namespace BookingSystem.Android.Helpers
                 //  Print to output window
                 System.Diagnostics.Debug.WriteLine(message);
 
-                new global::Android.Support.V7.App.AlertDialog.Builder(context)
+                new AlertDialog.Builder(context)
                     .SetTitle(title)
                     .SetMessage(message)
                     .SetPositiveButton("OK", delegate { })

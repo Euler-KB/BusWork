@@ -36,11 +36,11 @@ namespace BookingSystem.Android.Pages
             {
                 case BookingSystem.API.Models.AccountType.Administrator:
                     {
-                        if(buses == null || buses.Count == 0)
+                        if (buses == null || buses.Count == 0)
                         {
                             NoItemsView.SubMessage = "To add a new bus, tap the floating button below";
                         }
-                        else if(buses?.Count != 0 && busAdapter?.Items.Count == 0)
+                        else if (buses?.Count != 0 && busAdapter?.Items.Count == 0)
                         {
                             NoItemsView.SubMessage = "No buses match search keyword or filters!";
                         }
@@ -77,6 +77,11 @@ namespace BookingSystem.Android.Pages
             //  Create adapter
             busAdapter = new SmartAdapter<BusInfo>(Activity, Resource.Layout.bus_item_layout, ViewHolders.ItemHolders.BusItemBindings);
 
+            //
+            CreateBusActivity.OnBusCreated += OnBusCreated;
+
+            ViewHolders.ItemHolders.OnBusRemoved += OnBusRemoved;
+
             //  
             listView.Adapter = busAdapter;
 
@@ -93,17 +98,26 @@ namespace BookingSystem.Android.Pages
             await LoadBusesAsync();
         }
 
+        void OnBusRemoved(object sender , BusInfo e)
+        {
+            Activity.RunOnUiThread(delegate
+            {
+                var item = busAdapter.Items.FirstOrDefault(x => x.Id == e.Id);
+                if (item != null)
+                {
+                    busAdapter.Items.Remove(item);
+                    busAdapter.NotifyDataSetChanged();
+                }
+
+            });
+        }
+
         protected IEnumerable<BusInfo> FilterBuses(IEnumerable<BusInfo> buses, string query)
         {
             return query.IsValidString() ? buses.Where(x => x.Name.StartsWith(query, StringComparison.OrdinalIgnoreCase) || x.Model.StartsWith(query, StringComparison.OrdinalIgnoreCase)) : buses;
         }
 
-        protected override Task OnRefreshViewAsync() => LoadBusesAsync();
-
-        public async void Refresh()
-        {
-            await LoadBusesAsync();
-        }
+        public override Task OnRefreshViewAsync() => LoadBusesAsync();
 
         protected async Task LoadBusesAsync()
         {
@@ -169,28 +183,26 @@ namespace BookingSystem.Android.Pages
             CreateBusActivity.Navigate(Activity, requestCode: 0x500);
         }
 
-        void OnBusCreated(object sender , BusInfo busInfo)
+        void OnBusCreated(object sender, BusInfo busInfo)
         {
-            Refresh();
+            Activity.RunOnUiThread(async delegate
+            {
+                await OnRefreshViewAsync();
+            });
         }
 
-        public override void OnResume()
-        {
-            CreateBusActivity.OnBusCreated += OnBusCreated;
-            base.OnResume();
-        }
-
-        public override void OnPause()
+        public override void OnDestroyView()
         {
             CreateBusActivity.OnBusCreated -= OnBusCreated;
-            base.OnPause();
+            ViewHolders.ItemHolders.OnBusRemoved -= OnBusRemoved;
+            base.OnDestroyView();
         }
 
         public override void OnActivityResult(int requestCode, int resultCode, Intent data)
         {
             if (requestCode == 0x500 && resultCode == (int)Result.Ok)
             {
-                Refresh();
+                OnRefreshViewAsync();
             }
         }
     }

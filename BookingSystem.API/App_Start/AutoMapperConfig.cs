@@ -91,6 +91,7 @@ namespace BookingSystem.API
             config.CreateMap<BusRoute, RouteInfo>();
             config.CreateMap<UserFeedBack, FeedbackInfoEx>();
             config.CreateMap<UserFeedBack, FeedbackInfo>();
+            config.CreateMap<Transaction, TransactionInfo>();
             config.CreateMap<UserWallet, WalletInfo>();
             config.CreateMap<Media, MediaInfo>()
                 .ForMember(x => x.Uri, x => x.ResolveUsing(t => $"image/stream/{t.Name}"))

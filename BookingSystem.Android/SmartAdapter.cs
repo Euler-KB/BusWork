@@ -24,11 +24,8 @@ namespace BookingSystem.Android
             get { return items; }
             set
             {
-                if (items != value)
-                {
-                    items = value;
-                    NotifyDataSetChanged();
-                }
+                items = value;
+                NotifyDataSetChanged();
             }
         }
 

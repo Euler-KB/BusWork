@@ -56,6 +56,7 @@ namespace BookingSystem.API.Controllers
 
         [Authorize]
         [Route("category")]
+        [HttpGet]
         public IEnumerable<ReservationCategoryBinding> GetReservationCategories([FromUri]long[] id)
         {
             List<ReservationCategoryBinding> result = new List<ReservationCategoryBinding>();
@@ -129,8 +130,7 @@ namespace BookingSystem.API.Controllers
             }
 
             //
-            if (reservation.Transactions.Any(x => x.Status == TransactionStatus.Successful && (x.Type == TransactionType.Charge || x.Type == TransactionType.Refund)) ||
-                reservation.Transactions.Any(x => x.Status == TransactionStatus.Initiated && x.DateCompleted == null))
+            if (reservation.Transactions.Any(x => x.Status == TransactionStatus.Successful && (x.Type == TransactionType.Charge || x.Type == TransactionType.Refund)))
             {
                 return BadRequest("Reservation ticket cannot be charged in its current state!");
             }
@@ -138,15 +138,26 @@ namespace BookingSystem.API.Controllers
             var route = reservation.Route;
             var seats = reservation.Seats.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+            //
+            var finalCost = route.Cost * seats.Length;
+            var gatewayCharges = (await payment.CalculateCharges(finalCost, wallet, TransactionType.Charge));
+
             //  Charge for reservation here
             var txn = await payment.Charge(new ChargeOptions()
             {
-                Amount = route.Cost * seats.Length,
+                Amount = finalCost + gatewayCharges,
+
                 FeesOnCustomer = true,
                 AdditionalToken = payDetails.AdditionalToken,
                 Email = user.Email,
                 Name = user.FullName,
                 RefLocal = $"BKS-{Guid.NewGuid().ToString("N").Substring(0, 12)}",
+
+                //
+                TotalSeats = seats.Length,
+                UnitSeatCost = route.Cost,
+                GatewayCharges = gatewayCharges
+
             }, wallet);
 
             //  Set reservation
@@ -205,7 +216,7 @@ namespace BookingSystem.API.Controllers
 
             //  Check for already booked seats
             List<int> bookedSeats = new List<int>();
-            foreach (var seatBooking in DB.Reservations.Where(x => !x.Cancelled).Select(x => x.Seats).ToArray())
+            foreach (var seatBooking in DB.Reservations.Where(x => !x.Cancelled && x.RouteId == model.RouteId).Select(x => x.Seats).ToArray())
                 bookedSeats.AddRange(seatBooking.Split(',').Select(x => int.Parse(x)).ToArray());
 
             //
@@ -231,15 +242,23 @@ namespace BookingSystem.API.Controllers
 
 
             var finalCost = route.Cost * seats.Length;
+            var gatewayCharges = (await payment.CalculateCharges(finalCost, wallet, TransactionType.Charge));
+
             //  Charge for reservation here
             var txn = await payment.Charge(new ChargeOptions()
             {
-                Amount = finalCost + (await payment.CalculateCharges(finalCost, wallet, TransactionType.Charge)),
+                Amount = finalCost + gatewayCharges,
                 FeesOnCustomer = true,
                 AdditionalToken = model.AdditionalToken,
                 Email = user.Email,
                 Name = user.FullName,
-                RefLocal = $"BKS-{Guid.NewGuid().ToString("N").Substring(0, 12)}"
+                RefLocal = $"BKS-{Guid.NewGuid().ToString("N").Substring(0, 12)}",
+
+                //
+                UnitSeatCost = route.Cost,
+                TotalSeats = seats.Length,
+                GatewayCharges = gatewayCharges
+
             }, wallet);
 
             //  Set reservation
@@ -247,7 +266,9 @@ namespace BookingSystem.API.Controllers
             reservation.Transactions.Add(txn);
 
             DB.SaveChanges();
-            return CreatedAtRoute("DefaultApi", new { Id = reservation.Id }, Map<ReservationInfo>(reservation));
+
+            //
+            return ResponseMessage(Request.CreateResponse(HttpStatusCode.Created, Map<ReservationInfo>(reservation)));
         }
 
         [HttpPut]
@@ -273,7 +294,7 @@ namespace BookingSystem.API.Controllers
                         refunded = true;
                     }
 
-                    DB.SaveChanges();
+                    await DB.SaveChangesAsync();
 
                     if (refunded)
                     {

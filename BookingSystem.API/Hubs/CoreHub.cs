@@ -5,31 +5,52 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using BookingSystem.API.Helpers;
+using System.Timers;
 
 namespace BookingSystem.API.Hubs
 {
     public class CoreHub : Hub
     {
-        public override Task OnConnected()
+
+#if DEBUG
+        static CoreHub()
         {
-            var auth = this.Context.Headers["Authentication"];
+            int count = 0;
+            Timer timer = new Timer(2000);
+            timer.Elapsed += delegate
+            {
+                try
+                {
+                    GlobalHost.ConnectionManager.GetHubContext<CoreHub>().Clients.All.OnTest(count++);
+                }
+                catch
+                {
+
+                }
+            };
+            timer.Start();
+        }
+#endif
+
+        public override async Task OnConnected()
+        {
+            var auth = this.Context.Headers["Authorization"];
             if (auth?.StartsWith("Bearer") == true)
             {
-                var userAuth = JwtHelper.DecodeToken(auth.Split(' ').Last());
+                var userAuth = JwtHelper.DecodeToken(auth.Split(' ').Last(), validateLifetime: false);
                 if (userAuth != null)
                 {
                     if (userAuth.IsInRole(UserRoles.Admin))
                     {
-                        Groups.Add(Context.ConnectionId, UserRoles.Admin);
+                        await Groups.Add(Context.ConnectionId, UserRoles.Admin);
                     }
                     else if (userAuth.IsInRole(UserRoles.User))
                     {
-                        Groups.Add(Context.ConnectionId, UserRoles.User);
+                        await Groups.Add(Context.ConnectionId, UserRoles.User);
                     }
                 }
             }
 
-            return Task.FromResult(0);
         }
     }
 }

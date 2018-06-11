@@ -37,6 +37,8 @@ namespace BookingSystem.Android.Pages
 
         public const int UpdateInterval = 980;
 
+        private bool isBgUpdateActive = false;
+
         private SmartAdapter<ReservationInfo> itemsAdapter;
         private IList<ReservationInfo> reservations;
         private FilterInfo currentFilter = new FilterInfo();
@@ -71,40 +73,63 @@ namespace BookingSystem.Android.Pages
 
             timer.Elapsed += async delegate
             {
-                var reservations = itemsAdapter.Items;
-                if (reservations?.Count > 0)
-                {
-                    var proxy = ProxyFactory.GetProxyInstace();
-                    var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.GetReservationCategory(reservations.Select(x => x.Id).ToArray()));
-                    if (response.Successful)
-                    {
-                        var data = await response.GetDataAsync<IList<ReservationCategoryBinding>>();
-                        foreach (var item in data)
-                        {
-                            var reservation = reservations.FirstOrDefault(x => x.Id == item.ReservationId);
-                            if (reservation != null)
-                                reservation.Category = item.Category;
-
-                        }
-
-                        //
-                        SetLoaded(data);
-
-                        //  Re-render
-                        itemsAdapter.NotifyDataSetChanged();
-                    }
-                    else
-                    {
-                        LogHelpers.Write(nameof(ReservationsPage), $"Failed refreshing reservations: {response.GetErrorDescription()}");
-                    }
-                }
-
+                if (!isBgUpdateActive)
+                    await OnBackgroundUpdate();
             };
 
             //
-            await LoadReservations();
+            await LoadReservations().ContinueWith(t =>
+            {
+                timer.Start();
+            });
+
+            //
+            CreateReservationActivity.OnReservationCreate += OnReservationCreated;
+            ViewHolders.ItemHolders.OnReservationCancelled += OnReservationCancelled;
+
         }
 
+        async Task OnBackgroundUpdate()
+        {
+            isBgUpdateActive = true;
+
+            var reservations = itemsAdapter.Items;
+            if (reservations?.Count > 0)
+            {
+                var proxy = ProxyFactory.GetProxyInstace();
+                var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.GetReservationCategory(reservations.Select(x => x.Id).ToArray()));
+                if (response.Successful)
+                {
+                    var data = await response.GetDataAsync<IList<ReservationCategoryBinding>>();
+                    foreach (var item in data)
+                    {
+                        var reservation = reservations.FirstOrDefault(x => x.Id == item.ReservationId);
+                        if (reservation != null)
+                            reservation.Category = item.Category;
+                    }
+
+                    Activity.RunOnUiThread(() =>
+                    {
+                        itemsAdapter.Items = reservations;
+                    });
+
+                }
+                else
+                {
+                    LogHelpers.Write(nameof(ReservationsPage), $"Failed refreshing reservations: {response.GetErrorDescription()}");
+                }
+            }
+
+            isBgUpdateActive = false;
+        }
+
+        void OnReservationCancelled(object sender, ReservationInfo r)
+        {
+            Activity.RunOnUiThread(async delegate
+            {
+                await OnRefreshViewAsync() ;
+            });
+        }
 
         public void OnAddItem()
         {
@@ -114,29 +139,32 @@ namespace BookingSystem.Android.Pages
 
         public override void OnResume()
         {
-            CreateReservationActivity.OnReservationCreate += OnReservationCreated;
             timer.Start();
             base.OnResume();
         }
 
-        private async void OnReservationCreated(object sender, ReservationInfo e)
+        private void OnReservationCreated(object sender, ReservationInfo e)
         {
-            await LoadReservations();
+            Activity.RunOnUiThread(async delegate
+            {
+                await LoadReservations();
+            });
         }
 
-        public override void OnPause()
+        public override void OnDestroyView()
         {
-            CreateReservationActivity.OnReservationCreate -= OnReservationCreated;
             timer.Stop();
-            base.OnPause();
+            CreateReservationActivity.OnReservationCreate -= OnReservationCreated;
+            ViewHolders.ItemHolders.OnReservationCancelled -= OnReservationCancelled;
+            base.OnDestroyView();
         }
 
-        protected override Task OnRefreshViewAsync() => LoadReservations();
+        public override Task OnRefreshViewAsync() => LoadReservations();
 
         protected IEnumerable<ReservationInfo> FilterReservations(IEnumerable<ReservationInfo> rsv)
         {
             if (currentFilter.Search.IsValidString())
-                rsv = rsv.Where(x => (x.UserFullName.IsValidString() ? x.UserFullName.ContainsIgnoreCase(currentFilter.Search) : true) &&
+                rsv = rsv.Where(x => (x.UserFullName.IsValidString() ? x.UserFullName.ContainsIgnoreCase(currentFilter.Search) : true) ||
                 x.ReferenceNo.Contains(currentFilter.Search));
 
             if (currentFilter.From.IsValidString())

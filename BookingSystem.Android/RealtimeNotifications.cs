@@ -14,6 +14,7 @@ using BookingSystem.Android.Factory;
 using System.Timers;
 using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
+using BookingSystem.Android.Helpers;
 
 namespace BookingSystem.Android.Notifications
 {
@@ -26,11 +27,14 @@ namespace BookingSystem.Android.Notifications
         const int ConnectionCheckInterval = 2500;
 
         static bool isRegistered;
+
         static Timer connectionTimer;
 
         public static event EventHandler<long> OnReservationRefunded;
 
         public static event EventHandler<long> OnReservationPaid;
+
+        public static event EventHandler<long> OnPaymentFailed;
 
         //
         static HubConnection hubConnection;
@@ -56,6 +60,9 @@ namespace BookingSystem.Android.Notifications
 
         private static void InitConnection(API.AuthenticationInfo e)
         {
+            //
+            var handler = new Handler(Looper.MainLooper);
+
             hubConnection = new HubConnection(Resources.APIBaseAddress, true);
 
             if (hubConnection.Headers.ContainsKey("Authorization"))
@@ -65,27 +72,29 @@ namespace BookingSystem.Android.Notifications
 
             coreHub = hubConnection.CreateHubProxy("CoreHub");
 
-            var handler = new Handler(Looper.MainLooper);
-
             coreHub.On("OnReservationPaid", (long id) =>
             {
-                handler.Post(() =>
-                {
-                    OnReservationPaid?.Invoke(null, id);
-                });
-
+                handler.Post(() => OnReservationPaid?.Invoke(null, id));
             });
 
             coreHub.On("OnReservationRefunded", (long id) =>
             {
-                handler.Post(() =>
-                {
-                    OnReservationRefunded?.Invoke(null, id);
-
-                });
+                handler.Post(() => OnReservationRefunded?.Invoke(null, id));
             });
 
-            hubConnection.Start();
+            coreHub.On("OnReservationPaymentFailed", (long id) =>
+            {
+                handler.Post(() => OnPaymentFailed?.Invoke(null, id));
+            });
+
+#if DEBUG
+
+            coreHub.On("OnTest", (int count) =>
+            {
+                LogHelpers.Write(nameof(RealtimeNotifications), $"Receive test notification: {count}");
+            });
+
+#endif
 
             hubConnection.Error += (err) =>
             {
@@ -99,12 +108,27 @@ namespace BookingSystem.Android.Notifications
 
                 if (t.NewState == ConnectionState.Connected)
                 {
-                    Toast.MakeText(Application.Context, "Notifications setup", ToastLength.Short).Show();
+                    LogHelpers.Write(nameof(RealtimeNotifications), "Connected to hub successfully!");
                 }
             };
 
             //
             isRegistered = true;
+
+            hubConnection.Start().ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    LogHelpers.Write(nameof(RealtimeNotifications), t.Exception.GetBaseException().ToString());
+                }
+                else
+                {
+                    LogHelpers.Write(nameof(RealtimeNotifications), "Connection was successful");
+                }
+
+            });
+
+
         }
 
         private static void OnUserLogin(object sender, API.AuthenticationInfo e)
@@ -120,10 +144,14 @@ namespace BookingSystem.Android.Notifications
 
         private static void OnCheckConnection(object sender, ElapsedEventArgs e)
         {
+            LogHelpers.Write(nameof(RealtimeNotifications), $"Hub State: {hubConnection.State}");
+
             var proxy = ProxyFactory.GetProxyInstace();
-            if (proxy.IsAuthenticated && hubConnection.State != ConnectionState.Connected ||
-                hubConnection.State != ConnectionState.Reconnecting)
+            if (proxy.IsAuthenticated && !(hubConnection.State == ConnectionState.Connected || hubConnection.State == ConnectionState.Connecting ||
+                hubConnection.State == ConnectionState.Reconnecting))
             {
+                LogHelpers.Write(nameof(RealtimeNotifications), $"Reconnecting hub in '{nameof(OnCheckConnection)}'");
+
                 //  Try reconnect
                 hubConnection.Stop();
 

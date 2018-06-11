@@ -87,6 +87,11 @@ namespace BookingSystem.Android
         private object currentPage = null;
 
         /// <summary>
+        /// Gets the current page
+        /// </summary>
+        public object CurrentPage => currentPage;
+
+        /// <summary>
         /// Invoked to add item to view
         /// </summary>
         public event EventHandler OnFabClicked;

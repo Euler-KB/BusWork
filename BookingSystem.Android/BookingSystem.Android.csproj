@@ -121,6 +121,7 @@
     <Compile Include="Pages\ContentPage.cs" />
     <Compile Include="Pages\FeedbackPage.cs" />
     <Compile Include="ReservationInfoActivity.cs" />
+    <Compile Include="SlydePayOrderProcessing.cs" />
     <Compile Include="SmartAdapter.cs" />
     <Compile Include="BaseDrawerActivity.cs" />
     <Compile Include="BroadcastMessageReceiver.cs" />
@@ -183,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_home_black_18dp.png" />
+    <AndroidResource Include="Resources\mipmap\mipmap-hdpi\ic_launcher.png" />
     <AndroidResource Include="Resources\values\attrs.xml" />
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
@@ -448,7 +450,9 @@
     <AndroidResource Include="Resources\layout\routes_filter_layout.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\ticket_small_layout.xml" />
+    <AndroidResource Include="Resources\layout\ticket_small_layout.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\menu\actions_bus_routes.xml" />
@@ -500,6 +504,24 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_bus_white_18dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap\mipmap-mdpi\ic_launcher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap\mipmap-xhdpi\ic_launcher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap\mipmap-xxhdpi\ic_launcher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap\mipmap-xxxhdpi\ic_launcher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_launcher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_logo_login.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -24,8 +24,6 @@ namespace BookingSystem.Android
 
         protected CustomApplication(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
         {
-
-#if !DEBUG
             void ShowError(Exception ex)
             {
                 if (CurrentActivity != null)
@@ -48,8 +46,6 @@ namespace BookingSystem.Android
             {
                 ShowError((Exception)e.ExceptionObject);
             };
-
-#endif
 
         }
 

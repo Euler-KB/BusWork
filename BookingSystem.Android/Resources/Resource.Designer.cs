@@ -2042,58 +2042,64 @@ namespace BookingSystem.Android
 			public const int ic_home_white_24dp = 2130837608;
 			
 			// aapt resource value: 0x7f020069
-			public const int ic_mode_edit_black_18dp = 2130837609;
+			public const int ic_launcher = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int ic_more_horiz_black_18dp = 2130837610;
+			public const int ic_logo_login = 2130837610;
 			
 			// aapt resource value: 0x7f02006b
-			public const int ic_more_vert_black_18dp = 2130837611;
+			public const int ic_mode_edit_black_18dp = 2130837611;
 			
 			// aapt resource value: 0x7f02006c
-			public const int ic_person_add_white_24dp = 2130837612;
+			public const int ic_more_horiz_black_18dp = 2130837612;
 			
 			// aapt resource value: 0x7f02006d
-			public const int ic_person_black_18dp = 2130837613;
+			public const int ic_more_vert_black_18dp = 2130837613;
 			
 			// aapt resource value: 0x7f02006e
-			public const int ic_refresh_black_18dp = 2130837614;
+			public const int ic_person_add_white_24dp = 2130837614;
 			
 			// aapt resource value: 0x7f02006f
-			public const int ic_refresh_white_18dp = 2130837615;
+			public const int ic_person_black_18dp = 2130837615;
 			
 			// aapt resource value: 0x7f020070
-			public const int ic_route = 2130837616;
+			public const int ic_refresh_black_18dp = 2130837616;
 			
 			// aapt resource value: 0x7f020071
-			public const int ic_search_black_18dp = 2130837617;
+			public const int ic_refresh_white_18dp = 2130837617;
 			
 			// aapt resource value: 0x7f020072
-			public const int ic_ticket = 2130837618;
+			public const int ic_route = 2130837618;
 			
 			// aapt resource value: 0x7f020073
-			public const int ic_toc_black_18dp = 2130837619;
+			public const int ic_search_black_18dp = 2130837619;
 			
 			// aapt resource value: 0x7f020074
-			public const int Icon = 2130837620;
+			public const int ic_ticket = 2130837620;
 			
 			// aapt resource value: 0x7f020075
-			public const int link_button = 2130837621;
+			public const int ic_toc_black_18dp = 2130837621;
 			
 			// aapt resource value: 0x7f020076
-			public const int mtn_mm = 2130837622;
-			
-			// aapt resource value: 0x7f02007a
-			public const int notification_template_icon_bg = 2130837626;
+			public const int Icon = 2130837622;
 			
 			// aapt resource value: 0x7f020077
-			public const int smiley_frown = 2130837623;
+			public const int link_button = 2130837623;
 			
 			// aapt resource value: 0x7f020078
-			public const int tigo_mm = 2130837624;
+			public const int mtn_mm = 2130837624;
+			
+			// aapt resource value: 0x7f02007c
+			public const int notification_template_icon_bg = 2130837628;
 			
 			// aapt resource value: 0x7f020079
-			public const int vodafone_mm = 2130837625;
+			public const int smiley_frown = 2130837625;
+			
+			// aapt resource value: 0x7f02007a
+			public const int tigo_mm = 2130837626;
+			
+			// aapt resource value: 0x7f02007b
+			public const int vodafone_mm = 2130837627;
 			
 			static Drawable()
 			{
@@ -2111,11 +2117,11 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600d7
 			public const int action0 = 2131099863;
 			
-			// aapt resource value: 0x7f06011f
-			public const int action_about = 2131099935;
+			// aapt resource value: 0x7f060120
+			public const int action_about = 2131099936;
 			
-			// aapt resource value: 0x7f060118
-			public const int action_add_route = 2131099928;
+			// aapt resource value: 0x7f060119
+			public const int action_add_route = 2131099929;
 			
 			// aapt resource value: 0x7f06005a
 			public const int action_bar = 2131099738;
@@ -2138,47 +2144,47 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f06003a
 			public const int action_bar_title = 2131099706;
 			
-			// aapt resource value: 0x7f060122
-			public const int action_cancel_reservation = 2131099938;
-			
-			// aapt resource value: 0x7f06012c
-			public const int action_change_email = 2131099948;
-			
-			// aapt resource value: 0x7f06012b
-			public const int action_change_fullname = 2131099947;
-			
-			// aapt resource value: 0x7f06012e
-			public const int action_change_password = 2131099950;
+			// aapt resource value: 0x7f060123
+			public const int action_cancel_reservation = 2131099939;
 			
 			// aapt resource value: 0x7f06012d
-			public const int action_change_phone = 2131099949;
+			public const int action_change_email = 2131099949;
 			
-			// aapt resource value: 0x7f06012a
-			public const int action_change_username = 2131099946;
+			// aapt resource value: 0x7f06012c
+			public const int action_change_fullname = 2131099948;
+			
+			// aapt resource value: 0x7f06012f
+			public const int action_change_password = 2131099951;
+			
+			// aapt resource value: 0x7f06012e
+			public const int action_change_phone = 2131099950;
+			
+			// aapt resource value: 0x7f06012b
+			public const int action_change_username = 2131099947;
 			
 			// aapt resource value: 0x7f06005b
 			public const int action_context_bar = 2131099739;
 			
-			// aapt resource value: 0x7f06011c
-			public const int action_create = 2131099932;
+			// aapt resource value: 0x7f06011d
+			public const int action_create = 2131099933;
 			
-			// aapt resource value: 0x7f06011a
-			public const int action_delete = 2131099930;
+			// aapt resource value: 0x7f06011b
+			public const int action_delete = 2131099931;
 			
-			// aapt resource value: 0x7f06012f
-			public const int action_delete_account = 2131099951;
+			// aapt resource value: 0x7f060130
+			public const int action_delete_account = 2131099952;
 			
 			// aapt resource value: 0x7f0600db
 			public const int action_divider = 2131099867;
 			
-			// aapt resource value: 0x7f060119
-			public const int action_edit = 2131099929;
+			// aapt resource value: 0x7f06011a
+			public const int action_edit = 2131099930;
 			
-			// aapt resource value: 0x7f06011b
-			public const int action_filter = 2131099931;
+			// aapt resource value: 0x7f06011c
+			public const int action_filter = 2131099932;
 			
-			// aapt resource value: 0x7f060129
-			public const int action_manage_wallets = 2131099945;
+			// aapt resource value: 0x7f06012a
+			public const int action_manage_wallets = 2131099946;
 			
 			// aapt resource value: 0x7f060003
 			public const int action_menu_divider = 2131099651;
@@ -2195,23 +2201,23 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f06003c
 			public const int action_mode_close_button = 2131099708;
 			
-			// aapt resource value: 0x7f060121
-			public const int action_refresh = 2131099937;
-			
-			// aapt resource value: 0x7f06011d
-			public const int action_reset = 2131099933;
-			
-			// aapt resource value: 0x7f060123
-			public const int action_set_default = 2131099939;
-			
-			// aapt resource value: 0x7f060117
-			public const int action_show_routes = 2131099927;
-			
-			// aapt resource value: 0x7f060120
-			public const int action_signout = 2131099936;
+			// aapt resource value: 0x7f060122
+			public const int action_refresh = 2131099938;
 			
 			// aapt resource value: 0x7f06011e
-			public const int action_user_profile = 2131099934;
+			public const int action_reset = 2131099934;
+			
+			// aapt resource value: 0x7f060124
+			public const int action_set_default = 2131099940;
+			
+			// aapt resource value: 0x7f060118
+			public const int action_show_routes = 2131099928;
+			
+			// aapt resource value: 0x7f060121
+			public const int action_signout = 2131099937;
+			
+			// aapt resource value: 0x7f06011f
+			public const int action_user_profile = 2131099935;
 			
 			// aapt resource value: 0x7f06003d
 			public const int activity_chooser_view_content = 2131099709;
@@ -2234,8 +2240,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f06006b
 			public const int btn_activate_account = 2131099755;
 			
-			// aapt resource value: 0x7f060104
-			public const int btn_book_reservation = 2131099908;
+			// aapt resource value: 0x7f060105
+			public const int btn_book_reservation = 2131099909;
 			
 			// aapt resource value: 0x7f060090
 			public const int btn_bus_info = 2131099792;
@@ -2243,17 +2249,17 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600bb
 			public const int btn_delete_account = 2131099835;
 			
+			// aapt resource value: 0x7f060110
+			public const int btn_edit_email = 2131099920;
+			
 			// aapt resource value: 0x7f06010e
-			public const int btn_edit_email = 2131099918;
+			public const int btn_edit_fullname = 2131099918;
+			
+			// aapt resource value: 0x7f060112
+			public const int btn_edit_phone = 2131099922;
 			
 			// aapt resource value: 0x7f06010c
-			public const int btn_edit_fullname = 2131099916;
-			
-			// aapt resource value: 0x7f060110
-			public const int btn_edit_phone = 2131099920;
-			
-			// aapt resource value: 0x7f06010a
-			public const int btn_edit_username = 2131099914;
+			public const int btn_edit_username = 2131099916;
 			
 			// aapt resource value: 0x7f0600d2
 			public const int btn_forgot_password = 2131099858;
@@ -2261,8 +2267,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600d1
 			public const int btn_login = 2131099857;
 			
-			// aapt resource value: 0x7f060111
-			public const int btn_manage_wallet = 2131099921;
+			// aapt resource value: 0x7f06010a
+			public const int btn_manage_wallet = 2131099914;
 			
 			// aapt resource value: 0x7f0600a4
 			public const int btn_nav_home = 2131099812;
@@ -2288,8 +2294,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f060099
 			public const int btn_submit = 2131099801;
 			
-			// aapt resource value: 0x7f060115
-			public const int btn_wallet_more = 2131099925;
+			// aapt resource value: 0x7f060116
+			public const int btn_wallet_more = 2131099926;
 			
 			// aapt resource value: 0x7f060096
 			public const int buses_list_view = 2131099798;
@@ -2450,8 +2456,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f060091
 			public const int img_bus_icon = 2131099793;
 			
-			// aapt resource value: 0x7f060116
-			public const int img_check_default = 2131099926;
+			// aapt resource value: 0x7f060117
+			public const int img_check_default = 2131099927;
 			
 			// aapt resource value: 0x7f0600a5
 			public const int img_connection_error = 2131099813;
@@ -2462,8 +2468,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600fd
 			public const int img_ticket = 2131099901;
 			
-			// aapt resource value: 0x7f060103
-			public const int img_user = 2131099907;
+			// aapt resource value: 0x7f060104
+			public const int img_user = 2131099908;
 			
 			// aapt resource value: 0x7f0600e2
 			public const int info = 2131099874;
@@ -2528,8 +2534,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600a6
 			public const int lb_connection_err_msg = 2131099814;
 			
-			// aapt resource value: 0x7f060101
-			public const int lb_date = 2131099905;
+			// aapt resource value: 0x7f060102
+			public const int lb_date = 2131099906;
 			
 			// aapt resource value: 0x7f0600ea
 			public const int lb_departure_time = 2131099882;
@@ -2540,35 +2546,35 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600f8
 			public const int lb_duration = 2131099896;
 			
-			// aapt resource value: 0x7f06010d
-			public const int lb_email = 2131099917;
+			// aapt resource value: 0x7f06010f
+			public const int lb_email = 2131099919;
 			
 			// aapt resource value: 0x7f0600b2
 			public const int lb_estimated_cost = 2131099826;
 			
-			// aapt resource value: 0x7f060102
-			public const int lb_feedback_message = 2131099906;
+			// aapt resource value: 0x7f060103
+			public const int lb_feedback_message = 2131099907;
 			
 			// aapt resource value: 0x7f0600e8
 			public const int lb_from = 2131099880;
 			
-			// aapt resource value: 0x7f06010b
-			public const int lb_fullname = 2131099915;
+			// aapt resource value: 0x7f06010d
+			public const int lb_fullname = 2131099917;
 			
 			// aapt resource value: 0x7f0600ce
 			public const int lb_hint = 2131099854;
 			
-			// aapt resource value: 0x7f060107
-			public const int lb_money_refunded = 2131099911;
+			// aapt resource value: 0x7f060108
+			public const int lb_money_refunded = 2131099912;
 			
 			// aapt resource value: 0x7f060070
 			public const int lb_money_today = 2131099760;
 			
-			// aapt resource value: 0x7f060105
-			public const int lb_money_total = 2131099909;
-			
 			// aapt resource value: 0x7f060106
-			public const int lb_money_total_value = 2131099910;
+			public const int lb_money_total = 2131099910;
+			
+			// aapt resource value: 0x7f060107
+			public const int lb_money_total_value = 2131099911;
 			
 			// aapt resource value: 0x7f060072
 			public const int lb_money_week = 2131099762;
@@ -2579,8 +2585,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600ca
 			public const int lb_msg = 2131099850;
 			
-			// aapt resource value: 0x7f06010f
-			public const int lb_phone = 2131099919;
+			// aapt resource value: 0x7f060111
+			public const int lb_phone = 2131099921;
 			
 			// aapt resource value: 0x7f0600ef
 			public const int lb_pickup_location = 2131099887;
@@ -2618,6 +2624,9 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600b9
 			public const int lb_selected_date = 2131099833;
 			
+			// aapt resource value: 0x7f060101
+			public const int lb_status = 2131099905;
+			
 			// aapt resource value: 0x7f0600cb
 			public const int lb_sub_msg = 2131099851;
 			
@@ -2636,8 +2645,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f0600f1
 			public const int lb_user_name = 2131099889;
 			
-			// aapt resource value: 0x7f060109
-			public const int lb_username = 2131099913;
+			// aapt resource value: 0x7f06010b
+			public const int lb_username = 2131099915;
 			
 			// aapt resource value: 0x7f06008c
 			public const int lb_users_pending_activation = 2131099788;
@@ -2657,11 +2666,11 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f060087
 			public const int lb_users_total = 2131099783;
 			
-			// aapt resource value: 0x7f060113
-			public const int lb_wallet_provider_name = 2131099923;
-			
 			// aapt resource value: 0x7f060114
-			public const int lb_wallet_value = 2131099924;
+			public const int lb_wallet_provider_name = 2131099924;
+			
+			// aapt resource value: 0x7f060115
+			public const int lb_wallet_value = 2131099925;
 			
 			// aapt resource value: 0x7f06002f
 			public const int left = 2131099695;
@@ -2696,20 +2705,20 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f060016
 			public const int multiply = 2131099670;
 			
-			// aapt resource value: 0x7f060125
-			public const int nav_action_buses = 2131099941;
-			
-			// aapt resource value: 0x7f060127
-			public const int nav_action_feedback = 2131099943;
-			
-			// aapt resource value: 0x7f060124
-			public const int nav_action_home = 2131099940;
-			
 			// aapt resource value: 0x7f060126
-			public const int nav_action_reservations = 2131099942;
+			public const int nav_action_buses = 2131099942;
 			
 			// aapt resource value: 0x7f060128
-			public const int nav_signout = 2131099944;
+			public const int nav_action_feedback = 2131099944;
+			
+			// aapt resource value: 0x7f060125
+			public const int nav_action_home = 2131099941;
+			
+			// aapt resource value: 0x7f060127
+			public const int nav_action_reservations = 2131099943;
+			
+			// aapt resource value: 0x7f060129
+			public const int nav_signout = 2131099945;
 			
 			// aapt resource value: 0x7f0600c0
 			public const int navigation_header_container = 2131099840;
@@ -2747,8 +2756,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f060029
 			public const int pin = 2131099689;
 			
-			// aapt resource value: 0x7f060108
-			public const int profile_img_placeholder = 2131099912;
+			// aapt resource value: 0x7f060109
+			public const int profile_img_placeholder = 2131099913;
 			
 			// aapt resource value: 0x7f060006
 			public const int progress_circular = 2131099654;
@@ -3008,8 +3017,8 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f06000a
 			public const int view_offset_helper = 2131099658;
 			
-			// aapt resource value: 0x7f060112
-			public const int wallet_provider_img = 2131099922;
+			// aapt resource value: 0x7f060113
+			public const int wallet_provider_img = 2131099923;
 			
 			// aapt resource value: 0x7f0600d4
 			public const int wallets_listview = 2131099860;

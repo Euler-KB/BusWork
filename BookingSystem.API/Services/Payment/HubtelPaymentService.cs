@@ -125,22 +125,7 @@ namespace BookingSystem.API.Services.Payment
 
     }
 
-    public class ChargeOptions
-    {
-        public double Amount { get; set; }
-
-        public string Email { get; set; }
-
-        public string Name { get; set; }
-
-        public bool? FeesOnCustomer { get; set; }
-
-        public string AdditionalToken { get; set; }
-
-        public string Description { get; set; }
-
-        public string RefLocal { get; set; }
-    }
+   
 
     public class HubtelPaymentService : IPaymentService
     {

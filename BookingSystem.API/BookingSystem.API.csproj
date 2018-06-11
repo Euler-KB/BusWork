@@ -195,6 +195,7 @@
     <Compile Include="Handlers\ApiKeyHandler.cs" />
     <Compile Include="Handlers\AuthenticationHandler.cs" />
     <Compile Include="Handlers\HubtelPaymentHandler.cs" />
+    <Compile Include="Handlers\SlydePayCallbackHandler.cs" />
     <Compile Include="Handlers\StaticMediaHandler.cs" />
     <Compile Include="Handlers\ThumbnailImageHandler.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Models\BookReservation.cs" />
     <Compile Include="Models\Bus.cs" />
     <Compile Include="Models\BusRoute.cs" />
+    <Compile Include="Models\ChargeOptions.cs" />
     <Compile Include="Models\IIdentifiable.cs" />
     <Compile Include="Models\ISoftDelete.cs" />
     <Compile Include="Models\ITimestamp.cs" />
@@ -247,6 +249,7 @@
     <Compile Include="Services\Payment\AMSPaymentService.cs" />
     <Compile Include="Services\Payment\HubtelPaymentService.cs" />
     <Compile Include="Services\Payment\IPaymentService.cs" />
+    <Compile Include="Services\Payment\SlydePayPayment.cs" />
     <Compile Include="Services\SMS\ISMSService.cs" />
     <Compile Include="Services\SMS\MNotify.cs" />
     <Compile Include="Services\SMS\TwilioClient.cs" />
@@ -276,6 +279,10 @@
     <ProjectReference Include="..\BookingSystem.API.Models\BookingSystem.API.Models.csproj">
       <Project>{775afce6-f248-4c21-93cd-40ad63246a4c}</Project>
       <Name>BookingSystem.API.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\iwallet-paylive-csharp-master\iWalletPayliveModule.csproj">
+      <Project>{d2726dba-edee-460c-8114-481c0e9124ae}</Project>
+      <Name>iWalletPayliveModule</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -421,7 +421,13 @@ namespace BookingSystem.API.Controllers
             };
 
             //
-            var reservations = await DB.Reservations.AsNoDbSetFilter().Where(x => x.User.Id == UserId).Select(x => new { x.DateCreated, x.Route.DepartureTime, x.Route.ArrivalTime }).ToListAsync();
+            var reservations = await DB.Reservations.AsNoDbSetFilter().Where(x => x.User.Id == UserId).Select(x => new
+            {
+                x.DateCreated,
+                x.Route.DepartureTime,
+                x.Route.ArrivalTime,
+                x.Cancelled
+            }).ToListAsync();
             dashboard.Reservations.Total = reservations.Count;
             foreach (var r in reservations)
             {
@@ -445,18 +451,19 @@ namespace BookingSystem.API.Controllers
                     dashboard.Reservations.Month++;
                 }
 
-                switch (RouteHelpers.Categorize(r.DepartureTime, r.ArrivalTime))
-                {
-                    case BusRouteState.Active:
-                        dashboard.Reservations.Active++;
-                        break;
-                    case BusRouteState.Used:
-                        dashboard.Reservations.Used++;
-                        break;
-                    case BusRouteState.Pending:
-                        dashboard.Reservations.Pending++;
-                        break;
-                }
+                if (!r.Cancelled)
+                    switch (RouteHelpers.Categorize(r.DepartureTime, r.ArrivalTime))
+                    {
+                        case BusRouteState.Active:
+                            dashboard.Reservations.Active++;
+                            break;
+                        case BusRouteState.Used:
+                            dashboard.Reservations.Used++;
+                            break;
+                        case BusRouteState.Pending:
+                            dashboard.Reservations.Pending++;
+                            break;
+                    }
             }
 
             //

@@ -116,7 +116,10 @@ namespace BookingSystem.Android
                     if (convertView == null)
                         convertView = ((Activity)Context).LayoutInflater.Inflate(global::Android.Resource.Layout.SimpleDropDownItem1Line, null);
 
-                    convertView.FindViewById<TextView>(global::Android.Resource.Id.Text1).Text = EmptyMessage;
+                    var view = convertView.FindViewById<TextView>(global::Android.Resource.Id.Text1);
+                    if (view != null)
+                        view.Text = EmptyMessage;
+
                     return convertView;
                 }
 
@@ -462,15 +465,15 @@ namespace BookingSystem.Android
                             }
 
                             var sb = new System.Text.StringBuilder();
-                            sb.AppendLine($"Are you sure you want to book the reservation from <b>{route.From}</b> to {route.Destination}");
-                            sb.AppendLine($"Duration: {DateHelper.FormatDifference(route.DepartureTime, route.ArrivalTime)}");
+                            sb.AppendLine($"Are you sure you want to book the reservation from <b>{route.From}</b> to <b>{route.Destination}</b><br/>");
+                            sb.AppendLine($"Duration: {DateHelper.FormatDifference(route.DepartureTime, route.ArrivalTime)}<br/>");
                             sb.AppendLine();
 
                             //
-                            sb.AppendLine($"Booking Cost: <b>{costInfo.ReservationCost}</b> GH¢");
-                            sb.AppendLine($"Additional Charges: <b>{costInfo.ReservationCost}</b> GH¢");
+                            sb.AppendLine($"Booking Cost: <b>GHS {costInfo.ReservationCost}</b><br/>");
+                            sb.AppendLine($"Additional Charges: <b> GHS {costInfo.Charges}</b><br/>");
 
-                            if (await this.ShowConfirm("Book Reservation", sb.ToString(), "Book") == true)
+                            if (await this.ShowConfirm("Book Reservation", sb.ToString(), "Book", "Cancel") == true)
                             {
                                 using (Busy())
                                 using (this.ShowProgress(null, "Booking reservation, please hold on..."))
@@ -486,8 +489,23 @@ namespace BookingSystem.Android
 
                                     if (response.Successful)
                                     {
+                                        var reservation = await response.GetDataAsync<ReservationInfo>();
+
+                                        response = await proxy.ExecuteAsync(API.Endpoints.TransactionEndpoints.GetForReservation(reservation.Id));
+                                        if (response.Successful)
+                                        {
+                                            var txn = await response.GetDataAsync<IEnumerable<TransactionInfo>>();
+                                            if (txn.Count(x => x.Type == BookingSystem.API.Models.TransactionType.Charge) > 0)
+                                            {
+                                                var fTxn = txn.First(x => x.Type == BookingSystem.API.Models.TransactionType.Charge);
+
+                                                //  Show payment confirmation
+                                                SlydePayOrderProcessing.Show(this, fTxn.RefExternal, reservation.Id, SlydePayOrderProcessing.SlydePayPaymentOrderCode);
+                                            }
+                                        }
+
                                         //
-                                        OnReservationCreate?.Invoke(this,  await response.GetDataAsync<ReservationInfo>() );
+                                        OnReservationCreate?.Invoke(this, reservation);
 
                                         //  Other's rely on this to refresh
                                         SetResult(Result.Ok);
@@ -549,6 +567,19 @@ namespace BookingSystem.Android
             {
                 //  We have all inputs setup
                 await OnCreateReservation();
+            }
+            else if (requestCode == SlydePayOrderProcessing.SlydePayPaymentOrderCode)
+            {
+                var status = (SlydePayOrderProcessing.PaymentStatus)Intent.GetIntExtra("Status", -1);
+                switch (status)
+                {
+                    case SlydePayOrderProcessing.PaymentStatus.Successful:
+                        Toast.MakeText(this, "Payment was successfully made!", ToastLength.Long).Show();
+                        break;
+                    case SlydePayOrderProcessing.PaymentStatus.Failed:
+                        Toast.MakeText(this, "Payment for reservation failed!", ToastLength.Short).Show();
+                        break;
+                }
             }
         }
 

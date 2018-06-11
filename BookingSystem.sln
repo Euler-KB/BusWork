@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingSystem.API.Models", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingSystem.Android", "BookingSystem.Android\BookingSystem.Android.csproj", "{183B2D1D-83DF-45B1-B080-4E89CEB660A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iWalletPayliveModule", "iwallet-paylive-csharp-master\iWalletPayliveModule.csproj", "{D2726DBA-EDEE-460C-8114-481C0E9124AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{183B2D1D-83DF-45B1-B080-4E89CEB660A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{183B2D1D-83DF-45B1-B080-4E89CEB660A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{183B2D1D-83DF-45B1-B080-4E89CEB660A8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D2726DBA-EDEE-460C-8114-481C0E9124AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2726DBA-EDEE-460C-8114-481C0E9124AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2726DBA-EDEE-460C-8114-481C0E9124AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2726DBA-EDEE-460C-8114-481C0E9124AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

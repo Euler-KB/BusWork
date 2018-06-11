@@ -44,7 +44,7 @@ namespace BookingSystem.API.Helpers
             return handler.WriteToken(handler.CreateToken(descriptor));
         }
 
-        public static ClaimsPrincipal DecodeToken(string token, string audience = "*", bool validateLifetime = true)
+        public static ClaimsPrincipal DecodeToken(string token, string audience  = TokenAudiences.Universal, bool validateLifetime = true)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             Microsoft.IdentityModel.Tokens.SecurityToken securityToken;

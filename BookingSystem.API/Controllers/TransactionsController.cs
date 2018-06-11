@@ -30,9 +30,9 @@ namespace BookingSystem.API.Controllers
 
         [Authorize]
         [Route("{id}/reservation")]
-        public IEnumerable<TransactionInfo> GetForReservation(long reservationId)
+        public IEnumerable<TransactionInfo> GetForReservation(long id)
         {
-            return Map<IList<TransactionInfo>>(DB.Transactions.Where(x => x.Wallet.User.Id == UserId && x.Reservation.Id == reservationId).AsNoTracking());
+            return Map<IList<TransactionInfo>>(DB.Transactions.Where(x => x.Wallet.User.Id == UserId && x.Reservation.Id == id).AsNoTracking());
         }
 
         [Authorize(Roles = UserRoles.User)]
