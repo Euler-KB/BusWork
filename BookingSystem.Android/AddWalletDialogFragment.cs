@@ -95,7 +95,7 @@ namespace BookingSystem.Android
                 }
                 else
                 {
-                    using (Activity.ShowProgress(null, "Add wallet, please hold on..."))
+                    using (Activity.ShowProgress(null, "Creating wallet, please hold on..."))
                     {
                         var response = await proxy.ExecuteAsync(API.Endpoints.WalletEndpoints.CreateWallet(provider, value));
                         if (response.Successful)

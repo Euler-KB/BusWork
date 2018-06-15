@@ -241,8 +241,8 @@ namespace BookingSystem.Android.Pages
             var money = dashboardModel.Money;
 
             lbMoneyTotal.Text = money.Total.ToNumericStandard(2);
-            lbMoneyToday.Text = money.Today.ToNumericStandard();
-            lbMoneyYesterday.Text = money.Yesterday.ToNumericStandard();
+            lbMoneyToday.Text = $"{money.Today.ToNumericStandard()} GHS";
+            lbMoneyYesterday.Text = $"{money.Yesterday.ToNumericStandard()} GHS";
 
             //
             lbMoneyRefunded.Text = money.Refunded.ToNumericStandard();

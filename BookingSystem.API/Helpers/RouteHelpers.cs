@@ -16,15 +16,16 @@ namespace BookingSystem.API.Helpers
     {
         public static BusRouteState Categorize(DateTime departure, DateTime arrival)
         {
-            if (DateTime.UtcNow >= departure && DateTime.UtcNow < arrival)
+            var Now = DateTime.Now;
+            if (Now >= departure && Now < arrival)
             {
                 return BusRouteState.Active;
             }
-            else if (arrival >= DateTime.UtcNow)
+            else if (Now >= arrival)
             {
                 return BusRouteState.Used;
             }
-            else if (DateTime.UtcNow < departure)
+            else if (Now < departure)
             {
                 return BusRouteState.Pending;
             }

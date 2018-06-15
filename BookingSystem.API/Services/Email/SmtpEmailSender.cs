@@ -1,10 +1,13 @@
-﻿using System;
+﻿using FluentEmail.Smtp;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 
 namespace BookingSystem.API.Services.Email
 {
@@ -23,33 +26,43 @@ namespace BookingSystem.API.Services.Email
             this.hostAddress = host;
             this.hostPort = hostPort;
 
+
+
             //
             client = new SmtpClient(this.hostAddress, this.hostPort);
             client.UseDefaultCredentials = false;
             client.EnableSsl = true;
             client.Credentials = new NetworkCredential(this.sourceEmail, this.password);
+
+            FluentEmail.Core.Email.DefaultSender = new SmtpSender(client);
+
         }
 
         public async Task SendAsync(SendMailOptions options)
         {
-            MailMessage message = new MailMessage();
-            message.IsBodyHtml = options.IsHtml;
-            message.Body = options.Message;
-            message.Subject = options.Subject;
-            message.From = new MailAddress(this.sourceEmail);
-            foreach (var email in options.Destinations)
-                message.To.Add(email);
 
-            await Task.Run(() =>
+            var mail = global::FluentEmail.Core.Email.From(this.sourceEmail)
+                .To(options.Destinations.Select(x => new FluentEmail.Core.Models.Address(x)).ToList())
+                .Body(options.Message)
+                .Subject(options.Subject);
+
+            if (options.IsHtml)
+                mail.BodyAsHtml();
+            else
+                mail.BodyAsPlainText();
+                
+
+            await Task.Run(async () =>
             {
                 try
                 {
-                    client.Send(message);
+                    await mail.SendAsync();
                 }
-                catch(Exception)
+                catch (Exception ex)
                 {
 
                     //  Trace failure sending mail
+                    File.WriteAllText(HostingEnvironment.MapPath("~/App_Data/MailError.txt"), ex.ToString());
 
                 }
 

@@ -143,6 +143,57 @@ namespace BookingSystem.Android
         private long? targetRouteId;
         private bool isTargetApplied;
 
+        private async void OnBusSelected(int position)
+        {
+            var item = busAdapter[position];
+            if (item != null)
+            {
+                if (await LoadRoutes(item.Id))
+                {
+                    if (!isTargetApplied && targetRouteId != null)
+                    {
+                        for (int i = 0; i < routeAdapter.Items.Count; i++)
+                        {
+                            if (routeAdapter.Items[i].Id == targetRouteId)
+                            {
+                                if (routesSpinner.SelectedItemPosition == i)
+                                    OnRouteSelected(i);
+                                else
+                                    routesSpinner.SetSelection(i);
+
+                                break;
+                            }
+
+
+                        }
+
+                        isTargetApplied = true;
+
+                    }
+                }
+            }
+        }
+
+        private async void OnRouteSelected(int position)
+        {
+            var item = routeAdapter[position];
+            if (item != null)
+            {
+                var proxy = ProxyFactory.GetProxyInstace();
+                var response = await proxy.ExecuteAsync(API.Endpoints.RoutesEndpoints.GetAvailableSeats(item.Id));
+                if (response.Successful)
+                {
+                    var data = await response.GetDataAsync<int[]>();
+                    this.availableSeats = data.Select(x => new KeyValuePair<string, bool>(x.ToString(), false)).ToArray();
+                    seatsSpinner.SetItems(availableSeats);
+                }
+                else
+                {
+                    Toast.MakeText(this, "Failed loading available seats!", ToastLength.Short).Show();
+                }
+            }
+        }
+
         public CreateReservationActivity() : base(Resource.Layout.create_reservation_layout)
         {
             OnLoaded += delegate
@@ -162,32 +213,10 @@ namespace BookingSystem.Android
                 tbPickupLocation = FindViewById<TextInputLayout>(Resource.Id.tb_pickup_location);
 
                 //
-                busesSpinner.ItemSelected += async (s, e) =>
+                busesSpinner.ItemSelected += (s, e) =>
                 {
                     //  Refresh the routes for the currently select buse
-                    var item = busAdapter[e.Position];
-                    if (item != null)
-                    {
-                        if (await LoadBusRoutes(item.Id))
-                        {
-                            if (!isTargetApplied && targetRouteId != null)
-                            {
-                                for (int i = 0; i < routeAdapter.Items.Count; i++)
-                                {
-                                    if (routeAdapter.Items[i].Id == targetRouteId)
-                                    {
-                                        routesSpinner.SetSelection(i);
-                                        break;
-                                    }
-
-
-                                }
-
-                                isTargetApplied = true;
-
-                            }
-                        }
-                    }
+                    OnBusSelected(e.Position);
 
                 };
 
@@ -272,25 +301,9 @@ namespace BookingSystem.Android
                 routesSpinner.Adapter = routeAdapter;
 
                 //
-                routesSpinner.ItemSelected += async (s, e) =>
+                routesSpinner.ItemSelected += (s, e) =>
                 {
-                    var item = routeAdapter[e.Position];
-                    if (item != null)
-                    {
-                        var proxy = ProxyFactory.GetProxyInstace();
-                        var response = await proxy.ExecuteAsync(API.Endpoints.RoutesEndpoints.GetAvailableSeats(item.Id));
-                        if (response.Successful)
-                        {
-                            var data = await response.GetDataAsync<int[]>();
-                            this.availableSeats = data.Select(x => new KeyValuePair<string, bool>(x.ToString(), false)).ToArray();
-                            seatsSpinner.SetItems(availableSeats);
-                        }
-                        else
-                        {
-                            Toast.MakeText(this, "Failed loading available seats!", ToastLength.Short).Show();
-                        }
-                    }
-
+                    OnRouteSelected(e.Position);
                 };
 
                 //
@@ -315,7 +328,15 @@ namespace BookingSystem.Android
                         var bus = busAdapter.Items[i];
                         if (bus.Id == targetBusId)
                         {
-                            busesSpinner.SetSelection(i);
+                            if (busesSpinner.SelectedItemPosition == i)
+                            {
+                                OnBusSelected(i);
+                            }
+                            else
+                            {
+                                busesSpinner.SetSelection(i);
+                            }
+
                             break;
                         }
                     }
@@ -332,7 +353,7 @@ namespace BookingSystem.Android
                     {
                         var item = busAdapter.Empty ? null : busAdapter[0];
                         if (item != null)
-                            await LoadBusRoutes(item.Id);
+                            await LoadRoutes(item.Id);
                     }
 
 
@@ -490,17 +511,22 @@ namespace BookingSystem.Android
                                     if (response.Successful)
                                     {
                                         var reservation = await response.GetDataAsync<ReservationInfo>();
-
                                         response = await proxy.ExecuteAsync(API.Endpoints.TransactionEndpoints.GetForReservation(reservation.Id));
                                         if (response.Successful)
                                         {
                                             var txn = await response.GetDataAsync<IEnumerable<TransactionInfo>>();
-                                            if (txn.Count(x => x.Type == BookingSystem.API.Models.TransactionType.Charge) > 0)
+                                            var successfulCharge = txn.Where(x => x.Type == BookingSystem.API.Models.TransactionType.Charge && x.Status == BookingSystem.API.Models.TransactionStatus.Successful).ToList();
+                                            if (successfulCharge.Count > 0)
                                             {
-                                                var fTxn = txn.First(x => x.Type == BookingSystem.API.Models.TransactionType.Charge);
+                                                var fTxn = successfulCharge.First();
+                                                Toast.MakeText(this, "Payment has been made successfully!", ToastLength.Short).Show();
 
                                                 //  Show payment confirmation
-                                                SlydePayOrderProcessing.Show(this, fTxn.RefExternal, reservation.Id, SlydePayOrderProcessing.SlydePayPaymentOrderCode);
+                                                //SlydePayOrderProcessing.Show(this, fTxn.RefExternal, reservation.Id, SlydePayOrderProcessing.SlydePayPaymentOrderCode);
+                                            }
+                                            else
+                                            {
+                                                Toast.MakeText(this, "Failed initiating payment processor", ToastLength.Short).Show();
                                             }
                                         }
 
@@ -533,19 +559,30 @@ namespace BookingSystem.Android
 
         }
 
-        private async Task<bool> LoadBusRoutes(long busId)
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            seatsSpinner.SaveToBundle("SelectedSeats", outState);
+            base.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnRestoreInstanceState(Bundle savedInstanceState)
+        {
+            seatsSpinner.RestoreFromBundle("SelectedSeats", savedInstanceState);
+            base.OnRestoreInstanceState(savedInstanceState);
+        }
+
+        private async Task<bool> LoadRoutes(long busId)
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.RoutesEndpoints.GetForBus(busId));
             if (response.Successful)
             {
+                //  Update adapter
+                var routes = await response.GetDataAsync<List<RouteInfo>>();
+                routeAdapter.Items = routes;
+
                 RunOnUiThread(async () =>
                 {
-                    //  Update adapter
-                    var routes = await response.GetDataAsync<List<RouteInfo>>();
-                    routeAdapter.Items = routes;
-
-                    //
                     await LoadSeats();
 
                 });

@@ -13,12 +13,14 @@ using Android.Widget;
 using Android.Support.V7.Widget;
 using Android.Content.Res;
 using AlertDialog = Android.Support.V7.App.AlertDialog;
+using Newtonsoft.Json;
 
 namespace BookingSystem.Android.Views
 {
     [Register("booking.system.MultiSelectSpinner")]
     public class MultiSelectSpinner : AppCompatSpinner
     {
+        private IList<KeyValuePair<string, bool>> checkMap;
         private IList<string> items = new List<string>();
         private bool[] selected = new bool[0];
         private string defaultText = "Select Items";
@@ -131,6 +133,7 @@ namespace BookingSystem.Android.Views
 
         }
 
+
         public override bool PerformClick()
         {
             if (items?.Count > 0)
@@ -138,11 +141,12 @@ namespace BookingSystem.Android.Views
 
                 var dlg = new AlertDialog.Builder(Context)
                     .SetTitle(spinnerTitle)
-                    .SetMultiChoiceItems(items.ToArray(), selected, new EventHandler<DialogMultiChoiceClickEventArgs>((s,e) =>
+                    .SetMultiChoiceItems(items.ToArray(), selected, new EventHandler<DialogMultiChoiceClickEventArgs>((s, e) =>
                     {
                         selected[e.Which] = e.IsChecked;
                     }))
-                    .SetPositiveButton(global::Android.Resource.String.Ok, delegate {
+                    .SetPositiveButton(global::Android.Resource.String.Ok, delegate
+                    {
                     })
                     .Create();
 
@@ -157,6 +161,18 @@ namespace BookingSystem.Android.Views
             return true;
         }
 
+        public void SaveToBundle(string key, Bundle bundle)
+        {
+            bundle.PutString(key, JsonConvert.SerializeObject(checkMap));
+        }
+
+        public void RestoreFromBundle(string key, Bundle bundle)
+        {
+            if (bundle.ContainsKey("Items"))
+            {
+                SetItems(JsonConvert.DeserializeObject<IList<KeyValuePair<string, bool>>>(bundle.GetString(key)));
+            }
+        }
 
         /**
          * Sets items to this spinner.
@@ -166,6 +182,10 @@ namespace BookingSystem.Android.Views
          */
         public void SetItems(IList<KeyValuePair<string, bool>> items)
         {
+            //
+            this.checkMap = items;
+
+            //
             this.items = items.Select(x => x.Key).ToArray();
             var values = items.Select(x => x.Value).ToArray();
             selected = new bool[values.Length];

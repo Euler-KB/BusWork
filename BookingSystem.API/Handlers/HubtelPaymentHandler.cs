@@ -1,6 +1,7 @@
 ﻿using BookingSystem.API.Hubs;
 using BookingSystem.API.Models;
 using BookingSystem.API.Models.DTO;
+using BookingSystem.API.Services.Payment;
 using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json;
 using System;
@@ -44,7 +45,8 @@ namespace BookingSystem.API.Handlers
                     //  Broadcast notification
                     if (txn.Status == TransactionStatus.Successful)
                     {
-                        GlobalHost.ConnectionManager.GetHubContext<CoreHub>().Clients.All.OnReservationPaid(txn.Reservation.Id);
+                        var notifService = (IPaymentNotification) GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPaymentNotification));
+                        await notifService.OnPaymentSuccessul(txn.Reservation, txn);
                     }
 
                 }

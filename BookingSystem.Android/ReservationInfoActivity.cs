@@ -18,6 +18,8 @@ namespace BookingSystem.Android
     [Activity(Label = "Reservation Info")]
     public class ReservationInfoActivity : BaseActivity
     {
+        public static event EventHandler<ReservationInfo> OnCancelled;
+
         ReservationInfo reservation;
 
         protected override int? GetMenuResource() => Resource.Menu.actions_reservations;
@@ -56,6 +58,7 @@ namespace BookingSystem.Android
             var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.CancelReservation(reservation.Id));
             if (response.Successful)
             {
+                OnCancelled?.Invoke(this, reservation);
                 Toast.MakeText(this, "Reservation cancelled successfully!", ToastLength.Short).Show();
                 Finish();
             }

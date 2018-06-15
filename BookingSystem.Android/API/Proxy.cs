@@ -186,7 +186,13 @@ namespace BookingSystem.Android.API
             return response;
         }
 
-        public ServiceProxy() : this(Resources.APIBaseAddress, Resources.APIKey)
+        public ServiceProxy() :
+#if DEBUG
+            this(Resources.APIBaseAddress, Resources.APIKey)
+#else
+            this(Resources.APIBaseAddressRelease, Resources.APIKey)
+#endif
+
         {
 
         }
@@ -257,7 +263,7 @@ namespace BookingSystem.Android.API
         public async Task<bool> RestoreAsync(AuthenticationInfo authInfo, bool updateUser = false)
         {
 
-            if (authInfo.AccessToken == null || authInfo.RefreshToken == null)
+            if (authInfo == null || authInfo.AccessToken == null || authInfo.RefreshToken == null)
                 return false;
 
             //  set authentication info
@@ -393,6 +399,11 @@ namespace BookingSystem.Android.API
                 {
                     if (!await this.RefreshTokenAsync())
                         return new ApiResponse(new HttpRequestException("Token refresh failed. Please try again!"), endpoint);
+                }
+
+                if (endpoint.RequireAuth && AuthInfo?.User == null)
+                {
+                    await UpdateUserInfoAsync();
                 }
 
                 //  Get request object

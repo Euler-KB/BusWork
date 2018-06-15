@@ -19,6 +19,8 @@ namespace BookingSystem.Android.ViewHolders
 {
     public partial class ItemHolders
     {
+        public static event EventHandler<WalletInfo> OnWalletRemoved;
+
         public static readonly IList<ViewBind> WalletItemBindings = new List<ViewBind>()
         {
             new PropertyBind<ImageView,WalletInfo>(Resource.Id.wallet_provider_img, (view,wallet) =>
@@ -55,7 +57,11 @@ namespace BookingSystem.Android.ViewHolders
                     popupMenu.Inflate(Resource.Menu.actions_wallet_item);
                     if(wallet.Id == UserPreferences.Default.PrimaryWalletId)
                     {
-                        popupMenu.Menu.FindItem(Resource.Id.action_set_default).SetEnabled(false);
+                        popupMenu.Menu.FindItem(Resource.Id.action_set_default).SetVisible(false);
+                    }
+                    else
+                    {
+                        popupMenu.Menu.FindItem(Resource.Id.action_set_default).SetVisible(true);
                     }
 
                     popupMenu.MenuItemClick += (s,e) =>
@@ -64,8 +70,8 @@ namespace BookingSystem.Android.ViewHolders
                         {
                             case Resource.Id.action_set_default:
                                 {
-                                    UserPreferences.Default.PrimaryWalletId = wallet.Id;
-                                    (CustomApplication.CurrentActivity as ManageWalletsActivity)?.NotifyDataChanged();
+                                        UserPreferences.Default.PrimaryWalletId = wallet.Id;
+                                        (CustomApplication.CurrentActivity as ManageWalletsActivity)?.NotifyDataChanged();
                                 }
                                 break;
                             case Resource.Id.action_edit:
@@ -85,6 +91,7 @@ namespace BookingSystem.Android.ViewHolders
                                                     var response = await proxy.ExecuteAsync(API.Endpoints.WalletEndpoints.DeleteWallet(wallet.Id));
                                                     if (response.Successful)
                                                     {
+                                                        OnWalletRemoved?.Invoke(WalletItemBindings , wallet);
                                                         Toast.MakeText(context,"Wallet removed successfully!" , ToastLength.Short).Show();
                                                     }
                                                     else

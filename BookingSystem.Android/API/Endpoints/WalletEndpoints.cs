@@ -28,7 +28,7 @@ namespace BookingSystem.Android.API.Endpoints
 
         public static IEndpoint DeleteWallet(long id) => new ApiEndpoint($"{BaseUri}/{id}", HttpMethod.Delete);
 
-        public static IEndpoint UpdateWallet(long id, EditWalletInfo walletInfo) => new ApiEndpoint(BaseUri, HttpMethod.Put, walletInfo);
+        public static IEndpoint UpdateWallet(long id, EditWalletInfo walletInfo) => new ApiEndpoint($"{BaseUri}/{id}", HttpMethod.Put, walletInfo);
 
         public static IEndpoint CreateWallet(string provider, string value) => new ApiEndpoint(BaseUri, HttpMethod.Post, new CreateWalletInfo()
         {

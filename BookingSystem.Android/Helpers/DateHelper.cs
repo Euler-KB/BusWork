@@ -28,7 +28,7 @@ namespace BookingSystem.Android.Helpers
                 {
                     new TimePickerDialog(context, new EventHandler<TimePickerDialog.TimeSetEventArgs>((sender, evt) =>
                     {
-                        var selectedDate = new DateTime(e.Year, e.Month, e.DayOfMonth, evt.HourOfDay, evt.Minute, 0);
+                        var selectedDate = new DateTime(e.Year, e.Month + 1, e.DayOfMonth, evt.HourOfDay, evt.Minute, 0);
                         onSelected?.Invoke(selectedDate);
 
                     }), current.Value.Hour, current.Value.Minute, false).Show();

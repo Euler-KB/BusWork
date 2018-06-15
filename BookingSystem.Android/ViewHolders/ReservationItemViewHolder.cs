@@ -48,40 +48,45 @@ namespace BookingSystem.Android.ViewHolders
             popupMenu.Inflate(Resource.Menu.actions_reservations);
             var menu = popupMenu.Menu;
 
-            if (r.Category != ReservationCategory.Pending)
-            {
-                menu.FindItem(Resource.Id.action_cancel_reservation).SetVisible(false);
-            }
-
             popupMenu.MenuItemClick += (sender, evt) =>
             {
                 switch (evt.Item.ItemId)
                 {
                     case Resource.Id.action_cancel_reservation:
                         {
-                            new AlertDialog.Builder(context)
-                            .SetTitle("Cancel Reservation")
-                            .SetMessage("Are you sure you want to cancel the reservation?")
-                            .SetPositiveButton("Yes", async delegate
+                            if (r.Category != ReservationCategory.Pending)
                             {
-                                var proxy = ProxyFactory.GetProxyInstace();
-                                using (context.ShowProgress(null, "Cancelling request..."))
+                                new AlertDialog.Builder(context)
+                                        .SetMessage("Reservation is already cancelled!")
+                                        .SetPositiveButton("OK", delegate { })
+                                        .Show();
+
+                                return;
+                            }
+
+                            new AlertDialog.Builder(context)
+                                .SetTitle("Cancel Reservation")
+                                .SetMessage("Are you sure you want to cancel the reservation?")
+                                .SetPositiveButton("Yes", async delegate
                                 {
-                                    var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.CancelReservation(r.Id));
-                                    if (response.Successful)
+                                    var proxy = ProxyFactory.GetProxyInstace();
+                                    using (context.ShowProgress(null, "Cancelling request..."))
                                     {
-                                        //
-                                        OnReservationCancelled?.Invoke(bindings, r);
-                                        Toast.MakeText(context, "Ticket reservation cancelled successfully!", ToastLength.Short).Show();
+                                        var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.CancelReservation(r.Id));
+                                        if (response.Successful)
+                                        {
+                                            //
+                                            OnReservationCancelled?.Invoke(bindings, r);
+                                            Toast.MakeText(context, "Ticket reservation cancelled successfully!", ToastLength.Short).Show();
+                                        }
+                                        else
+                                        {
+                                            Toast.MakeText(context, "Failed cancelling reservation!", ToastLength.Short).Show();
+                                        }
                                     }
-                                    else
-                                    {
-                                        Toast.MakeText(context, "Failed cancelling reservation!", ToastLength.Short).Show();
-                                    }
-                                }
-                            })
-                            .SetNegativeButton("No", delegate { })
-                            .Show();
+                                })
+                                .SetNegativeButton("No", delegate { })
+                                .Show();
                         }
                         break;
                 }
@@ -108,7 +113,7 @@ namespace BookingSystem.Android.ViewHolders
                     case AccountType.Administrator:
                         {
                             view.Visibility = ViewStates.Visible;
-                            view.FindViewById<TextView>(Resource.Id.lb_username).Text = r.UserFullName;
+                            view.FindViewById<TextView>(Resource.Id.lb_user_name).Text = r.UserFullName;
                         }
                         break;
                         case AccountType.User:

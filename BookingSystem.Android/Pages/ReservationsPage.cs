@@ -86,6 +86,7 @@ namespace BookingSystem.Android.Pages
             //
             CreateReservationActivity.OnReservationCreate += OnReservationCreated;
             ViewHolders.ItemHolders.OnReservationCancelled += OnReservationCancelled;
+            ReservationInfoActivity.OnCancelled += OnReservationCancelled;
 
         }
 
@@ -154,8 +155,12 @@ namespace BookingSystem.Android.Pages
         public override void OnDestroyView()
         {
             timer.Stop();
+
+            //  Unregister events
             CreateReservationActivity.OnReservationCreate -= OnReservationCreated;
             ViewHolders.ItemHolders.OnReservationCancelled -= OnReservationCancelled;
+            ReservationInfoActivity.OnCancelled -= OnReservationCancelled;
+
             base.OnDestroyView();
         }
 

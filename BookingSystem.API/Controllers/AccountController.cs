@@ -252,6 +252,7 @@ namespace BookingSystem.API.Controllers
             {
                 x.DateCreated,
                 x.EmailConfirmed,
+                x.PhoneConfirmed,
                 x.LockedOut,
             }).AsNoTracking().Future();
 
@@ -307,7 +308,7 @@ namespace BookingSystem.API.Controllers
             dashboard.Users.TotalUsers = qUsers.Count;
             foreach (var u in qUsers)
             {
-                if (u.EmailConfirmed && !u.LockedOut)
+                if ((u.EmailConfirmed || u.PhoneConfirmed) && !u.LockedOut)
                 {
                     if (DateHelper.IsToday(u.DateCreated))
                     {
@@ -638,7 +639,7 @@ namespace BookingSystem.API.Controllers
                     Destinations = new string[] { user.Email },
                     Subject = "Reset Password",
                     IsHtml = false,
-                    Message = $"Hello {user.FullName.Split(' ').First()}, here's your password reset code"
+                    Message = $"Hello {user.FullName.Split(' ').First()}, here's your password reset code : {token}"
                 });
 
                 return Ok(new
@@ -782,7 +783,7 @@ namespace BookingSystem.API.Controllers
                 return BadRequest(MessageResources.MSG_LOGIN_LOCKED_ACC);
             }
 
-            if (!user.EmailConfirmed)
+            if (!(user.EmailConfirmed || user.PhoneConfirmed))
             {
                 var response = Request.CreateErrorResponse(HttpStatusCode.BadRequest, MessageResources.MSG_LOGIN_REQUIRE_EMAIL_CONFIRM);
                 response.Headers.Add("UserToken", JwtHelper.SignToken(user, audience: TokenAudiences.ActivateAccount));
@@ -836,13 +837,25 @@ namespace BookingSystem.API.Controllers
                 return Forbidden();
 
             //  send confirmation email
-            await emailService.SendAsync(new SendMailOptions()
+            await smsService.SendAsync(new SendSMSOptions()
             {
-                Subject = "Activate Account",
                 Destinations = new string[] { user.Email },
-                IsHtml = false,
-                Message = $"Hello {user.FullName.Split(' ')}, here's your account activation code {activateToken.Token}"
+                Message = $"Here's your activation code: {activateToken.Token}"
             });
+
+            //else
+            //{
+
+            //    //  send confirmation email
+            //    await emailService.SendAsync(new SendMailOptions()
+            //    {
+            //        Subject = "Activate Account",
+            //        Destinations = new string[] { user.Email },
+            //        IsHtml = false,
+            //        Message = $"Hello {user.FullName.Split(' ')}, here's your account activation code {activateToken.Token}"
+            //    });
+            //}
+
 
             return Empty();
         }
@@ -864,13 +877,20 @@ namespace BookingSystem.API.Controllers
             if (token != null)
             {
                 DB.Tokens.Remove(token);
-                user.EmailConfirmed = true;
+                user.PhoneConfirmed = true;
                 DB.SaveChanges();
                 return Empty();
             }
 
             return BadRequest("Invalid activation code entered");
         }
+
+        //[Route("confirm/email")]
+        //[HttpPost]
+        //public Task<IHttpActionResult> ConfirmEmail()
+        //{
+
+        //}
 
         [Route("register")]
         [HttpPost]
@@ -906,6 +926,7 @@ namespace BookingSystem.API.Controllers
             user.Phone = model.Phone;
             user.Username = model.Username;
             user.EmailConfirmed = false;
+            user.PhoneConfirmed = false;
             user.LockedOut = false;
 
             IEnumerable<Claim> claims = null;
@@ -940,16 +961,28 @@ namespace BookingSystem.API.Controllers
             //
             DB.Users.Add(user);
 
+            //
             await DB.SaveChangesAsync();
 
-            //  send confirmation email
-            await emailService.SendAsync(new SendMailOptions()
+            //  Phone Number Confirmation
+            await smsService.SendAsync(new SendSMSOptions()
             {
-                Destinations = new string[] { user.Email },
-                IsHtml = false,
-                Subject = "Activate Account",
-                Message = $"Hello {model.FirstName.Trim()}, here's your account activation code {activationToken.Token}"
+                Destinations = new string[] { user.Phone },
+                Message = $"Here's your activation code: {activationToken.Token}",
             });
+
+            //else
+            //{
+
+            //    //  send confirmation email
+            //    await emailService.SendAsync(new SendMailOptions()
+            //    {
+            //        Destinations = new string[] { user.Email },
+            //        IsHtml = false,
+            //        Subject = "Activate Account",
+            //        Message = $"Hello {model.FirstName.Trim()}, here's your account activation code {activationToken.Token}"
+            //    });
+            //}
 
             //
             var response = Request.CreateResponse(HttpStatusCode.Created, Map<UserInfo>(user));

@@ -118,8 +118,9 @@ namespace BookingSystem.API.Seeding
                 dbUser.Phone = user.Phone;
                 dbUser.FullName = user.FullName;
 
-                //  Email already confirmed
+                //  Email & Phone already confirmed
                 dbUser.EmailConfirmed = true;
+                dbUser.PhoneConfirmed = true;
 
                 switch (user.Role)
                 {

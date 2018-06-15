@@ -18,6 +18,7 @@ namespace BookingSystem.API.Controllers
     public class ReservationController : BaseController
     {
         private IPaymentService payment;
+        private IPaymentNotification payNotification;
 
         protected IQueryable<BookReservation> Reservations
         {
@@ -31,9 +32,10 @@ namespace BookingSystem.API.Controllers
             }
         }
 
-        public ReservationController(IPaymentService paymentService)
+        public ReservationController(IPaymentService paymentService, IPaymentNotification payNotification)
         {
             payment = paymentService;
+            this.payNotification = payNotification;
         }
 
         [Authorize(Roles = UserRoles.Admin)]
@@ -165,6 +167,17 @@ namespace BookingSystem.API.Controllers
             reservation.Transactions.Add(txn);
 
             DB.SaveChanges();
+
+            //
+            if (txn.Status == TransactionStatus.Successful)
+            {
+                await payNotification.OnPaymentSuccessul(reservation, txn);
+            }
+            else if (txn.Status == TransactionStatus.Failed)
+            {
+                await payNotification.OnPaymentFail(reservation, txn);
+            }
+
             return Empty();
         }
 
@@ -240,7 +253,6 @@ namespace BookingSystem.API.Controllers
 
             user.Reservations.Add(reservation);
 
-
             var finalCost = route.Cost * seats.Length;
             var gatewayCharges = (await payment.CalculateCharges(finalCost, wallet, TransactionType.Charge));
 
@@ -266,6 +278,16 @@ namespace BookingSystem.API.Controllers
             reservation.Transactions.Add(txn);
 
             DB.SaveChanges();
+
+            //
+            if (txn.Status == TransactionStatus.Successful)
+            {
+                await payNotification.OnPaymentSuccessul(reservation, txn);
+            }
+            else if (txn.Status == TransactionStatus.Failed)
+            {
+                await payNotification.OnPaymentFail(reservation, txn);
+            }
 
             //
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.Created, Map<ReservationInfo>(reservation)));

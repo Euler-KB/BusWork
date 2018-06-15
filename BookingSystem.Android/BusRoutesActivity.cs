@@ -65,7 +65,26 @@ namespace BookingSystem.Android
                         ShowFilterDialog(filter =>
                         {
                             currentFilter = filter;
-                            routesAdapter.Items = FilterRoutes(routes).ToList();
+
+                            var items = FilterRoutes(routes).ToList();
+                            if (items.Count > 0)
+                            {
+                                if (listView.Adapter is SmartAdapter<RouteInfo>)
+                                    routesAdapter.Items = items;
+                                else
+                                {
+                                    listView.Adapter = (routesAdapter = new SmartAdapter<RouteInfo>(this, Resource.Layout.route_dropdown_item, ViewHolders.ItemHolders.RouteItemBindings)
+                                    {
+                                        Items = items
+                                    });
+                                }
+
+                            }
+                            else
+                            {
+                                listView.Adapter = new ArrayAdapter<string>(this, global::Android.Resource.Layout.SimpleListItem1, new string[] { "No routes match selected filters!" });
+                            }
+
                         });
                     }
                     break;

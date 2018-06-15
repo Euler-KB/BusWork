@@ -72,11 +72,13 @@ namespace BookingSystem.Android
                 //
                 AddWalletDialogFragment.OnCreated += OnWalletCreated;
                 AddWalletDialogFragment.OnUpdated += OnWalletUpdate;
+                ViewHolders.ItemHolders.OnWalletRemoved += OnWalletRemoved;
 
                 await RefreshView(false, true);
             };
 
         }
+
 
         async Task RefreshView(bool indicator = true, bool interrogate = false)
         {
@@ -94,26 +96,39 @@ namespace BookingSystem.Android
             itemsAdapter?.NotifyDataSetChanged();
         }
 
+
+        private async void OnWalletRemoved(object sender, WalletInfo e)
+        {
+            await RefreshView(false, false);
+        }
+
         protected async void OnWalletCreated(object sender, WalletInfo wallet)
         {
-            await RefreshView(false, false).ContinueWith(async t =>
-           {
-               if (wallets.Count == 1)
-               {
-                   if (await this.ShowConfirm("Configure Wallet", $"Do you want to make the wallet <b>{NetworkProviders[wallet.Provider]}</b> - <b>{wallet.Value}</b> your default wallet?", "Yes", "No") == true)
-                   {
-                       UserPreferences.Default.PrimaryWalletId = wallet.Id;
-                       itemsAdapter.NotifyDataSetChanged();
-                   }
 
-                   if (createOnly)
-                   {
-                       SetResult(Result.Ok);
-                       Finish();
-                   }
-               }
+            await RefreshView(false, false).ContinueWith(t =>
+            {
+                if (wallets.Count == 1)
+                {
+                    RunOnUiThread(async delegate
+                    {
+                        if (await this.ShowConfirm("Configure Wallet", $"Do you want to make the wallet <b>{wallet.Provider}</b> - <b>{wallet.Value}</b> your default wallet?", "Yes", "No") == true)
+                        {
+                            UserPreferences.Default.PrimaryWalletId = wallet.Id;
+                            itemsAdapter.NotifyDataSetChanged();
+                        }
 
-           });
+                        if (createOnly)
+                        {
+                            SetResult(Result.Ok);
+                            Finish();
+                        }
+                    });
+
+                }
+
+            });
+
+
 
         }
 
@@ -126,6 +141,7 @@ namespace BookingSystem.Android
         {
             AddWalletDialogFragment.OnCreated -= OnWalletCreated;
             AddWalletDialogFragment.OnUpdated -= OnWalletUpdate;
+            ViewHolders.ItemHolders.OnWalletRemoved -= OnWalletRemoved;
             base.OnDestroy();
         }
 
@@ -235,7 +251,16 @@ namespace BookingSystem.Android
                                 Value = phone
                             }, false).Show(FragmentManager, "add-wallet");
                         })
-                        .SetNegativeButton("Nope Thanks", delegate { })
+                        .SetNegativeButton("Nope Thanks", delegate
+                        {
+
+                            if (createOnly)
+                            {
+                                SetResult(Result.Canceled);
+                                Finish();
+                            }
+
+                        })
                         .Show();
                 }
             }

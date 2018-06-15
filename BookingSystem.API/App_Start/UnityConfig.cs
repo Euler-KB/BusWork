@@ -21,6 +21,7 @@ namespace BookingSystem.API
             RegisterEmailService(container);
             RegisterPaymentService(container);
             RegisterSMSService(container);
+            RegisterPaymentNotification(container);
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }
@@ -35,13 +36,23 @@ namespace BookingSystem.API
             container.RegisterInstance<IEmailService>(new SmtpEmailSender(sourceEmail, password, host, port));
         }
 
+        static void RegisterPaymentNotification(UnityContainer container)
+        {
+            container.RegisterInstance<IPaymentNotification>(new AdminPaymentNotification());
+        }
+
         static void RegisterSMSService(UnityContainer container)
         {
+
+#if DEBUG
+            container.RegisterInstance<ISMSService>(new DebugSMSService());
+
+#else
             switch (ConfigurationManager.AppSettings["SMS_ENGINE"])
             {
                 case "MNotify":
                     {
-                        string key = ConfigurationManager.AppSettings["SMS_ENGINE"];
+                        string key = ConfigurationManager.AppSettings["MNOTIFY_KEY"];
                         container.RegisterInstance<ISMSService>(new MNotify(key));
                     }
                     break;
@@ -54,6 +65,8 @@ namespace BookingSystem.API
                     }
                     break;
             }
+#endif
+
 
         }
 
@@ -67,14 +80,7 @@ namespace BookingSystem.API
                         string merchantEmail = ConfigurationManager.AppSettings["SPAY_EMAIL"];
                         string apiKey = ConfigurationManager.AppSettings["SPAY_API_KEY"];
 
-                        container.RegisterInstance<IPaymentService>(new SlydePayPayment(apiVer, merchantEmail, apiKey,
-#if DEBUG
-                            true
-#else
-                            false
-#endif
-                            ));
-
+                        container.RegisterInstance<IPaymentService>(new SlydePayPayment(apiVer, merchantEmail, apiKey, true));
                     }
                     break;
                 case "AMS":

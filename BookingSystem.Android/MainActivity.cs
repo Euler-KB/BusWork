@@ -30,13 +30,16 @@ namespace BookingSystem.Android
                 {
                     var authInfo = AuthenticationManager.CurrentSession;
 
-                    if (await proxy.RestoreAsync(authInfo, true))
+                    if (!await proxy.RestoreAsync(authInfo, true))
                     {
-                        NavigationHelper.NavigateUserHome(this);
-                        Finish();
-                        return;
+                        LogHelpers.Write(nameof(MainActivity), "Failed restoring user session");
                     }
 
+                    NavigationHelper.NavigateUserHome(this);
+
+                    Finish();
+
+                    return;
                 }
             }
             catch

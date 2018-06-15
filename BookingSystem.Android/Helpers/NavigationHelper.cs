@@ -26,6 +26,15 @@ namespace BookingSystem.Android.Helpers
         public static void NavigateUserHome(Context context, Action<Intent> onPrepareIntent = null)
         {
             var proxy = ProxyFactory.GetProxyInstace();
+            if(proxy.User == null)
+            {
+                var intent = new Intent(context, typeof(LoginActivity));
+
+                //  Navigate to other activity
+                intent.SetFlags(ActivityFlags.ClearTask | ActivityFlags.NewTask | ActivityFlags.SingleTop);
+                context.StartActivity(intent);
+                return;
+            }
 
             Type activityType = null;
             switch (proxy.User.AccountType)

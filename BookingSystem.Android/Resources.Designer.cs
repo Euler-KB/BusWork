@@ -61,11 +61,20 @@ namespace BookingSystem.Android {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://buswork01-001-site1.gtempurl.com.
+        ///   Looks up a localized string similar to http://10.0.2.2:60897.
         /// </summary>
         internal static string APIBaseAddress {
             get {
                 return ResourceManager.GetString("APIBaseAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://busproject01-001-site1.ctempurl.com.
+        /// </summary>
+        internal static string APIBaseAddressRelease {
+            get {
+                return ResourceManager.GetString("APIBaseAddressRelease", resourceCulture);
             }
         }
         

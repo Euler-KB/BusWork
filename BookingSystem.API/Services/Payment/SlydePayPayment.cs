@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using BookingSystem.API.Models;
 using iWalletPayliveModule.gh.com.slydepay.app;
+using System.Web.Http;
 
 namespace BookingSystem.API.Services.Payment
 {
@@ -12,9 +13,13 @@ namespace BookingSystem.API.Services.Payment
     {
         private PaymentService client;
 
+        protected bool IsIntegrationMode { get; }
+
         public SlydePayPayment(string apiVersion, string merchantEmail, string apiKey, bool integrationMode, string serviceType = "C2B")
         {
             client = new PaymentService();
+
+            IsIntegrationMode = integrationMode;
 
             if (client.PaymentHeaderValue == null)
                 client.PaymentHeaderValue = new PaymentHeader();
@@ -51,20 +56,43 @@ namespace BookingSystem.API.Services.Payment
 
             try
             {
-                var result = await Task.Run(() => client.mobilePaymentOrder(options.RefLocal, (decimal)options.Amount, true, 0, true, 0, true, (decimal)options.Amount, true, "Payment for bus ticket", "", orderItems));
-                return new Transaction()
+
+                if (IsIntegrationMode)
                 {
-                    ChargedAmount = 0,
-                    FinalAmount = options.Amount,
-                    IdealAmount = options.Amount,
-                    RefExternal = result.token,
-                    Message = result.status,
-                    Status = result.success ? TransactionStatus.Initiated : TransactionStatus.Failed,
-                    DateCompleted = result.success ? (DateTime?)null : DateTime.UtcNow,
-                    Wallet = wallet,
-                    RefLocal = options.RefLocal,
-                    Type = TransactionType.Charge,
-                };
+                    return new Transaction()
+                    {
+                        ChargedAmount = 0,
+                        FinalAmount = options.Amount,
+                        IdealAmount = options.Amount,
+                        RefExternal = Guid.NewGuid().ToString("N"),
+                        Message = "Payment was successfull",
+                        Status = TransactionStatus.Successful,
+                        DateCompleted = DateTime.UtcNow,
+                        Wallet = wallet,
+                        RefLocal = options.RefLocal,
+                        Type = TransactionType.Charge,
+                    };
+                }
+                else
+                {
+
+                    var result = await Task.Run(() => client.mobilePaymentOrder(options.RefLocal, (decimal)options.Amount, true, 0, true, 0, true, (decimal)options.Amount, true, "Payment for bus ticket", "", orderItems));
+
+                    return new Transaction()
+                    {
+                        ChargedAmount = 0,
+                        FinalAmount = options.Amount,
+                        IdealAmount = options.Amount,
+                        RefExternal = result.token,
+                        Message = result.status,
+                        Status = result.success ? TransactionStatus.Initiated : TransactionStatus.Failed,
+                        DateCompleted = result.success ? (DateTime?)null : DateTime.UtcNow,
+                        Wallet = wallet,
+                        RefLocal = options.RefLocal,
+                        Type = TransactionType.Charge,
+                    };
+                }
+
             }
             catch (Exception ex)
             {

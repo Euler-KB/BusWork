@@ -56,6 +56,8 @@ namespace BookingSystem.API.Models
 
         public bool EmailConfirmed { get; set; }
 
+        public bool PhoneConfirmed { get; set; }
+
         public bool IsSoftDeleted { get; set; }
 
         public static IEnumerable<Claim> GenerateAdminClaims(AppUser user)
