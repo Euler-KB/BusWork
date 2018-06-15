@@ -400,6 +400,8 @@ namespace BookingSystem.API.Controllers
                 {
                     dashboard.Money.Month += t.IdealAmount;
                 }
+
+                dashboard.Money.Total += t.IdealAmount;
             }
 
             //

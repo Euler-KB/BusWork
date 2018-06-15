@@ -56,8 +56,16 @@ namespace BookingSystem.Android.ViewHolders
                         {
                             if (r.Category != ReservationCategory.Pending)
                             {
+                                string message = null;
+                                if (r.Category == ReservationCategory.Completed)
+                                    message = "Reservation cannot be cancelled when completed!";
+                                else if (r.Category == ReservationCategory.Active)
+                                    message = "Reservation cannot be cancelled when active";
+                                else if (r.Category == ReservationCategory.Cancelled)
+                                    message = "Reseravtion alerady cancelled!";
+
                                 new AlertDialog.Builder(context)
-                                        .SetMessage("Reservation is already cancelled!")
+                                        .SetMessage(message ?? "Not allowed")
                                         .SetPositiveButton("OK", delegate { })
                                         .Show();
 

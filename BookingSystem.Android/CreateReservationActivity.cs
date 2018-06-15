@@ -148,29 +148,30 @@ namespace BookingSystem.Android
             var item = busAdapter[position];
             if (item != null)
             {
-                if (await LoadRoutes(item.Id))
-                {
-                    if (!isTargetApplied && targetRouteId != null)
-                    {
-                        for (int i = 0; i < routeAdapter.Items.Count; i++)
-                        {
-                            if (routeAdapter.Items[i].Id == targetRouteId)
-                            {
-                                if (routesSpinner.SelectedItemPosition == i)
-                                    OnRouteSelected(i);
-                                else
-                                    routesSpinner.SetSelection(i);
+                await LoadRoutes(item.Id, delegate
+                 {
+                     if (!isTargetApplied && targetRouteId != null)
+                     {
+                         for (int i = 0; i < routeAdapter.Items.Count; i++)
+                         {
+                             if (routeAdapter.Items[i].Id == targetRouteId)
+                             {
+                                 if (routesSpinner.SelectedItemPosition == i)
+                                     OnRouteSelected(i);
+                                 else
+                                     routesSpinner.SetSelection(i);
 
-                                break;
-                            }
+                                 break;
+                             }
 
 
-                        }
+                         }
 
-                        isTargetApplied = true;
+                         isTargetApplied = true;
 
-                    }
-                }
+                     }
+
+                 });
             }
         }
 
@@ -321,7 +322,7 @@ namespace BookingSystem.Android
 
             if (!isTargetApplied && (targetBusId != null && targetRouteId != null))
             {
-                if (await LoadBusesAsync())
+                await LoadBusesAsync(delegate
                 {
                     for (int i = 0; i < busAdapter.Items.Count; i++)
                     {
@@ -340,8 +341,8 @@ namespace BookingSystem.Android
                             break;
                         }
                     }
+                });
 
-                }
             }
             else
             {
@@ -403,7 +404,7 @@ namespace BookingSystem.Android
             return false;
         }
 
-        protected async Task<bool> LoadBusesAsync()
+        protected async Task<bool> LoadBusesAsync(Action<IList<BusInfo>> load = null)
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.BusesEndpoints.GetAll());
@@ -413,6 +414,9 @@ namespace BookingSystem.Android
                 {
                     var items = await response.GetDataAsync<IList<BusInfo>>();
                     busAdapter.Items = items;
+
+                    //
+                    load?.Invoke(items);
                 });
 
                 return true;
@@ -571,18 +575,21 @@ namespace BookingSystem.Android
             base.OnRestoreInstanceState(savedInstanceState);
         }
 
-        private async Task<bool> LoadRoutes(long busId)
+        private async Task<bool> LoadRoutes(long busId , Action<List<RouteInfo>> load = null)
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.RoutesEndpoints.GetForBus(busId));
             if (response.Successful)
             {
                 //  Update adapter
-                var routes = await response.GetDataAsync<List<RouteInfo>>();
-                routeAdapter.Items = routes;
-
                 RunOnUiThread(async () =>
                 {
+                    var routes = await response.GetDataAsync<List<RouteInfo>>();
+                    routeAdapter.Items = routes;
+
+                    //
+                    load?.Invoke(routes);
+
                     await LoadSeats();
 
                 });
