@@ -11,7 +11,7 @@ namespace BookingSystem.Android
     {
         static MenuLayoutBinding[] Bindings = new MenuLayoutBinding[]
         {
-           new MenuLayoutBinding()
+            new MenuLayoutBinding()
             {
                 Title = Application.Context.Resources.GetString(Resource.String.AppName),
                 Layout = Resource.Layout.admin_home_layout,

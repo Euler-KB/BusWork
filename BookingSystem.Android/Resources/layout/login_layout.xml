@@ -50,13 +50,14 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp">
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Username"
-                        android:maxLines="1"
-                        android:textColor="@color/icons"
-                        android:textSize="14sp" />
+					<EditText
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:hint="Username"
+						android:inputType="text"
+						android:maxLines="1"
+						android:textColor="@color/icons"
+						android:textSize="14sp" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout

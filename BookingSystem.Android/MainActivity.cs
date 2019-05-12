@@ -16,10 +16,10 @@ using BookingSystem.Android.Helpers;
 
 namespace BookingSystem.Android
 {
-    [Activity(MainLauncher = true, Theme = "@android:style/Theme.NoDisplay")]
+    [Activity(MainLauncher = true, Theme = "@style/Booking.System.Splash")]
     public class MainActivity : Activity
     {
-        protected async void InitializeStateAsync()
+        protected void InitializeStateAsync()
         {
             try
             {
@@ -30,7 +30,7 @@ namespace BookingSystem.Android
                 {
                     var authInfo = AuthenticationManager.CurrentSession;
 
-                    if (!await proxy.RestoreAsync(authInfo, true))
+                    if (!proxy.RestoreAsync(authInfo, true))
                     {
                         LogHelpers.Write(nameof(MainActivity), "Failed restoring user session");
                     }

@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="APIBaseAddress" xml:space="preserve">
-    <value>http://10.0.2.2:60897</value>
+    <value>http://bookhostagent-001-site1.ftempurl.com</value>
   </data>
   <data name="APIBaseAddressRelease" xml:space="preserve">
-    <value>http://busproject01-001-site1.ctempurl.com</value>
+    <value>http://bookhostagent-001-site1.ftempurl.com</value>
   </data>
   <data name="APIKey" xml:space="preserve">
     <value>dhBqESwcpHmG9DV6VRnpz3NKDv6eKq2V</value>

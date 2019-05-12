@@ -120,7 +120,6 @@ namespace BookingSystem.Android.API
                         case WebExceptionStatus.SecureChannelFailure:
                         case WebExceptionStatus.TrustFailure:
                         case WebExceptionStatus.SendFailure:
-                        case WebExceptionStatus.Timeout:
                             return ServerResponse == null;
                     }
                 }

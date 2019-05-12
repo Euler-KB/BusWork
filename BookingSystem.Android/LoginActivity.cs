@@ -13,6 +13,7 @@ using Android.Support.V7.App;
 using Android.Support.Design.Widget;
 using BookingSystem.Android.Factory;
 using BookingSystem.Android.Helpers;
+using Android.Graphics;
 
 namespace BookingSystem.Android
 {
@@ -67,6 +68,9 @@ namespace BookingSystem.Android
         {
             if (!ValidateInputs())
                 return;
+
+            //
+            this.HideInputKeyboard();
 
             //
             string username = tbUsername.EditText.Text;
@@ -143,7 +147,9 @@ namespace BookingSystem.Android
 
         protected void ShowSnack(string message)
         {
-            Snackbar.Make(rootView, message, Snackbar.LengthShort).Show();
+            Snackbar.Make(rootView, message, Snackbar.LengthShort)
+                .SetActionTextColor(Color.White)
+                .Show();
         }
 
         protected bool ValidateInputs()

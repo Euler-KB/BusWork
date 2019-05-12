@@ -61,6 +61,9 @@ namespace BookingSystem.Android.Pages
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.AccountEndpoints.GetAllFeedbacks());
+            if (!IsActivePage)
+                return;
+
             if (response.Successful)
             {
                 var items = await response.GetDataAsync<IList<FeedbackInfoEx>>();

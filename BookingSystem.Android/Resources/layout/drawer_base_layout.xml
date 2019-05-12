@@ -42,6 +42,7 @@
         android:id="@+id/navigation_view_main"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        app:itemTextColor="#3a3a3a"
         android:layout_gravity="start">
     </android.support.design.widget.NavigationView>
 

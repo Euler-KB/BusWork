@@ -115,9 +115,7 @@ namespace BookingSystem.Android.Pages
                     if (isBusy)
                         return;
 
-                    //
-                    RestartTimer();
-
+                    using (BusyState.Begin(() => updateTimer.Stop(), () => updateTimer.Start()))
                     using (Busy())
                     {
                         await LoadDashboardValues();
@@ -129,6 +127,12 @@ namespace BookingSystem.Android.Pages
                 {
                     if (isBusy)
                         return;
+
+                    if(!IsActivePage)
+                    {
+                        updateTimer.Stop();
+                        return;
+                    }
 
                     Activity.RunOnUiThread(async delegate
                     {
@@ -165,6 +169,11 @@ namespace BookingSystem.Android.Pages
             updateTimer.Start();
         }
 
+        public override void OnLeavePage()
+        {
+            updateTimer.Stop();
+        }
+
         protected IDisposable Busy(bool indicator = true)
         {
             return BusyState.Begin(delegate
@@ -177,9 +186,7 @@ namespace BookingSystem.Android.Pages
             delegate
             {
                 isBusy = false;
-
-                if (indicator)
-                    swipeRefreshLayout.Refreshing = false;
+                swipeRefreshLayout.Refreshing = false;
 
             });
         }
@@ -188,17 +195,22 @@ namespace BookingSystem.Android.Pages
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.AccountEndpoints.AdminDashboard);
+            if (!IsActivePage)
+                return;
+
             if (response.Successful)
             {
+                 //
                 dashboard = await response.GetDataAsync<AdminDashboardModel>();
 
                 //  
                 BindDashboardValues();
+               
             }
             else
             {
                 if (!silent)
-                    Toast.MakeText(Context, response.GetErrorDescription(), ToastLength.Short).Show();
+                    ShowApiError(response);
             }
         }
 

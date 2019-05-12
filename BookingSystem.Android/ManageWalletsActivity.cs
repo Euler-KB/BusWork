@@ -204,6 +204,10 @@ namespace BookingSystem.Android
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.WalletEndpoints.GetMyWallets());
+
+            if (CustomApplication.CurrentActivity != this)
+                return;
+
             if (response.Successful)
             {
                 wallets = await response.GetDataAsync<IList<WalletInfo>>();
@@ -266,7 +270,7 @@ namespace BookingSystem.Android
             }
             else
             {
-                Toast.MakeText(this, response.GetResponseMessage(), ToastLength.Short).Show();
+                Toast.MakeText(this, response.GetErrorDescription(), ToastLength.Short).Show();
             }
         }
 

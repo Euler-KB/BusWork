@@ -402,6 +402,12 @@ namespace BookingSystem.Android
                 return;
 
             //
+            if(currentPage is BasePage page)
+            {
+                page.OnLeavePage();
+            }
+
+            //
             var basePage = Activator.CreateInstance(binding.PageType) as BasePage;
             if (basePage != null)
             {
@@ -409,9 +415,17 @@ namespace BookingSystem.Android
                 basePage.UserState = binding.UserState;
             }
 
-            SupportFragmentManager.BeginTransaction()
-                .Replace(Resource.Id.content_frame, basePage)
-                .Commit();
+            try
+            {
+                SupportFragmentManager.BeginTransaction()
+                      .Replace(Resource.Id.content_frame, basePage)
+                      .Commit();
+            }
+            catch(Exception ex)
+            {
+                LogHelpers.Write($"Failed replacing fragment view" + System.Environment.NewLine + ex.ToString());
+            }
+          
 
             //
             SupportActionBar.Title = binding.Title;

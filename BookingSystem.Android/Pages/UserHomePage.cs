@@ -57,7 +57,7 @@ namespace BookingSystem.Android.Pages
 
         public UserHomePage()
         {
-            OnLoaded += async (s, rootFrame) =>
+            OnLoaded += (s, rootFrame) =>
             {
                 //  Reservations section
                 lbReservationsToday = rootFrame.FindViewById<TextView>(Resource.Id.lb_reservations_today);
@@ -80,14 +80,10 @@ namespace BookingSystem.Android.Pages
 
                 swipeRefreshLayout.Refresh += async delegate
                 {
-                    //
                     if (isBusy)
                         return;
 
-                    //
-                    RestartUpdate();
-
-                    //
+                    using (BusyState.Begin(() => updateTimer.Stop(), () => updateTimer.Start()))
                     using (Busy())
                     {
                         await LoadStatistics();
@@ -100,13 +96,17 @@ namespace BookingSystem.Android.Pages
                     StartActivityForResult(new Intent(Activity, typeof(CreateReservationActivity)), CreateReservationLayout);
                 };
 
-                //  
-                await LoadStatistics();
 
                 updateTimer.Elapsed += delegate
                {
                    if (isBusy)
                        return;
+
+                   if (!IsActivePage)
+                   {
+                       updateTimer.Stop();
+                       return;
+                   }
 
                    Activity.RunOnUiThread(async delegate
                    {
@@ -115,6 +115,14 @@ namespace BookingSystem.Android.Pages
                    });
 
                };
+
+                dashboardModel = new UserDashboardModel()
+                {
+                    Money = new UserDashboardModel.MoneySpec<double>(),
+                    Reservations = new UserDashboardModel.ReservationSpec<long>()
+                };
+
+                BindDashboardValues();
             };
 
         }
@@ -191,35 +199,22 @@ namespace BookingSystem.Android.Pages
             var response = await proxy.ExecuteAsync(API.Endpoints.AccountEndpoints.UserDashboard);
             if (response.Successful)
             {
-                //  Decode response
-                dashboardModel = await response.GetDataAsync<UserDashboardModel>();
+                if (IsActivePage)
+                {
+                    //  Decode response
+                    dashboardModel = await response.GetDataAsync<UserDashboardModel>();
 
-                //  
-                BindDashboardValues();
+                    //  
+                    BindDashboardValues();
+                }
             }
             else
             {
                 if (!silent)
-                    Toast.MakeText(Activity, response.GetErrorDescription(), ToastLength.Short).Show();
+                    ShowApiError(response);
             }
         }
 
-        private void Animate(TextView view, float value, string format = "{0:N0}")
-        {
-            float initial = view.Text == "" ? 0 : float.Parse(view.Text);
-
-            //  No animation needed here
-            if (initial == value)
-                return;
-
-            var anim = ValueAnimator.OfFloat(initial, value);
-            anim.Start();
-            anim.SetInterpolator(ValueInterpolator);
-            anim.Update += (s, e) =>
-            {
-                view.Text = string.Format(format, ((float)e.Animation.AnimatedValue));
-            };
-        }
 
         private void UpdateReservationsSection()
         {

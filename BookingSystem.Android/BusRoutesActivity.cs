@@ -243,8 +243,13 @@ namespace BookingSystem.Android
         {
             var proxy = ProxyFactory.GetProxyInstace();
             var response = await proxy.ExecuteAsync(API.Endpoints.RoutesEndpoints.GetForBus(bus.Id));
+
+            if (CustomApplication.CurrentActivity != this)
+                return;
+
             if (response.Successful)
             {
+
                 routes = await response.GetDataAsync<IList<RouteInfo>>();
                 int actualCount = routes.Count;
 
@@ -271,7 +276,7 @@ namespace BookingSystem.Android
             }
             else
             {
-                Toast.MakeText(this, response.GetResponseMessage(), ToastLength.Short).Show();
+                Toast.MakeText(this, response.GetErrorDescription(), ToastLength.Short).Show();
             }
         }
 

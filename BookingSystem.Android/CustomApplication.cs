@@ -51,6 +51,7 @@ namespace BookingSystem.Android
 
         public override void OnCreate()
         {
+            base.OnCreate();
 
             //  Register
             RegisterActivityLifecycleCallbacks(this);
@@ -64,12 +65,11 @@ namespace BookingSystem.Android
             //  Setup notifications manager
             SetupNotificationsManager();
 
-            base.OnCreate();
         }
 
         protected void SetupNotificationsManager()
         {
-            RealtimeNotifications.RegisterServices();
+            //RealtimeNotifications.RegisterServices();
         }
 
         protected void SetupProxy()

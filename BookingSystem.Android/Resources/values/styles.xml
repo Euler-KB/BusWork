@@ -53,5 +53,11 @@
     <item name="android:textColor">#ffffff</item>
     <item name="android:background">@drawable/badge_danger</item>
   </style>
-
+  
+  <style name="Booking.System.Splash" parent ="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:windowBackground">@drawable/splash_screen</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
+  </style> 
+    
 </resources>

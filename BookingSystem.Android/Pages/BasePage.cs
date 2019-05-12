@@ -9,6 +9,8 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using BookingSystem.Android.API;
+using BookingSystem.Android.Helpers;
 
 namespace BookingSystem.Android.Pages
 {
@@ -19,6 +21,36 @@ namespace BookingSystem.Android.Pages
         public object UserState { get; set; }
 
         public event EventHandler<View> OnLoaded;
+
+        public virtual void OnLeavePage()
+        {
+            //  TODO: Implement leave code here
+        }
+
+        public bool IsActivePage
+        {
+            get
+            {
+                if (Activity is BaseDrawerActivity drawerActivity)
+                {
+                    //  Is this the current page
+                    if (drawerActivity.CurrentPage == this)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public void ShowApiError(ApiResponse response)
+        {
+            if(IsActivePage)
+            {
+                Toast.MakeText(Activity, response.GetErrorDescription(), ToastLength.Short).Show();
+            }
+        }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

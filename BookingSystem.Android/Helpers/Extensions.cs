@@ -14,6 +14,7 @@ using Android.Support.Design.Widget;
 using Newtonsoft.Json;
 using System.Reflection;
 using Android.Text;
+using Android.Views.InputMethods;
 
 namespace BookingSystem.Android.Helpers
 {
@@ -64,6 +65,17 @@ namespace BookingSystem.Android.Helpers
         public static string ToNumericStandard(this long value)
         {
             return value.ToString("N0");
+        }
+
+        public static void HideInputKeyboard(this Activity activity)
+        {
+            var mgr = InputMethodManager.FromContext(activity);
+            var focus =  activity.CurrentFocus;
+            if (focus == null)
+                focus = new View(activity);
+
+            mgr.HideSoftInputFromWindow(focus.WindowToken, HideSoftInputFlags.None);
+
         }
 
         public static bool SetError(this TextInputLayout textInputLayout, string error)

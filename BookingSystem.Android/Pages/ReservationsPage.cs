@@ -53,7 +53,6 @@ namespace BookingSystem.Android.Pages
             NoItemsView.Message = "No reservation tickets booked yet!";
             NoItemsView.SubMessage = "To book reservation, tap on the floating button below";
 
-
             //
             var itemsView = GetContentView<ListView>();
             itemsAdapter = new SmartAdapter<ReservationInfo>(Activity, Resource.Layout.ticket_small_layout,
@@ -94,31 +93,34 @@ namespace BookingSystem.Android.Pages
         {
             isBgUpdateActive = true;
 
-            var reservations = itemsAdapter.Items;
-            if (reservations?.Count > 0)
+            if (itemsAdapter.Items?.Count > 0)
             {
                 var proxy = ProxyFactory.GetProxyInstace();
-                var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.GetReservationCategory(reservations.Select(x => x.Id).ToArray()));
-                if (response.Successful)
+                var response = await proxy.ExecuteAsync(API.Endpoints.ReservationsEndpoints.GetReservationCategory(itemsAdapter.Items.Select(x => x.Id).ToArray()));
+                if (IsActivePage)
                 {
-                    var data = await response.GetDataAsync<IList<ReservationCategoryBinding>>();
-                    foreach (var item in data)
+                    if (response.Successful)
                     {
-                        var reservation = reservations.FirstOrDefault(x => x.Id == item.ReservationId);
-                        if (reservation != null)
-                            reservation.Category = item.Category;
+                        var data = await response.GetDataAsync<IList<ReservationCategoryBinding>>();
+                        foreach (var item in data)
+                        {
+                            var reservation = itemsAdapter.Items.FirstOrDefault(x => x.Id == item.ReservationId);
+                            if (reservation != null)
+                                reservation.Category = item.Category;
+                        }
+
+                        Activity.RunOnUiThread(() =>
+                        {
+                            itemsAdapter.Items = itemsAdapter.Items;
+                        });
+
                     }
-
-                    Activity.RunOnUiThread(() =>
+                    else
                     {
-                        itemsAdapter.Items = reservations;
-                    });
+                        LogHelpers.Write(nameof(ReservationsPage), $"Failed refreshing reservations: {response.GetErrorDescription()}");
+                    }
+                }
 
-                }
-                else
-                {
-                    LogHelpers.Write(nameof(ReservationsPage), $"Failed refreshing reservations: {response.GetErrorDescription()}");
-                }
             }
 
             isBgUpdateActive = false;
@@ -142,6 +144,12 @@ namespace BookingSystem.Android.Pages
         {
             timer.Start();
             base.OnResume();
+        }
+
+        public override void OnPause()
+        {
+            timer.Stop();
+            base.OnPause();
         }
 
         private void OnReservationCreated(object sender, ReservationInfo e)
@@ -201,19 +209,25 @@ namespace BookingSystem.Android.Pages
                     break;
             }
 
+            if (!IsActivePage)
+                return;
+
             if (response.Successful)
             {
+             
                 //
                 reservations = await response.GetDataAsync<IList<ReservationInfo>>();
                 itemsAdapter.Items = FilterReservations(reservations).ToList();
 
                 //  Mark loaded
                 SetLoaded(reservations);
+
+               
             }
             else
             {
                 if (IsLoaded)
-                    Toast.MakeText(Activity, response.GetErrorDescription(), ToastLength.Short).Show();
+                    ShowApiError(response);
                 else
                     UpdateResponse(response);
             }

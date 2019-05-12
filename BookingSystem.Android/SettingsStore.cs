@@ -76,7 +76,7 @@ namespace BookingSystem.Android
                 return;
 
             string payload = JsonConvert.SerializeObject(valuesMap);
-            var editor = Application.Context.GetSharedPreferences(SharedPreferenceName, FileCreationMode.Private | FileCreationMode.WorldWriteable).Edit();
+            var editor = Application.Context.GetSharedPreferences(SharedPreferenceName, FileCreationMode.Private).Edit();
             editor.PutString(DefaultKey, payload);
             editor.Apply();
 

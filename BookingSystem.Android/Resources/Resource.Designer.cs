@@ -2089,17 +2089,20 @@ namespace BookingSystem.Android
 			// aapt resource value: 0x7f020078
 			public const int mtn_mm = 2130837624;
 			
-			// aapt resource value: 0x7f02007c
-			public const int notification_template_icon_bg = 2130837628;
+			// aapt resource value: 0x7f02007d
+			public const int notification_template_icon_bg = 2130837629;
 			
 			// aapt resource value: 0x7f020079
 			public const int smiley_frown = 2130837625;
 			
 			// aapt resource value: 0x7f02007a
-			public const int tigo_mm = 2130837626;
+			public const int splash_screen = 2130837626;
 			
 			// aapt resource value: 0x7f02007b
-			public const int vodafone_mm = 2130837627;
+			public const int tigo_mm = 2130837627;
+			
+			// aapt resource value: 0x7f02007c
+			public const int vodafone_mm = 2130837628;
 			
 			static Drawable()
 			{
@@ -3969,6 +3972,9 @@ namespace BookingSystem.Android
 			
 			// aapt resource value: 0x7f070144
 			public const int Base_Widget_Design_TabLayout = 2131165508;
+			
+			// aapt resource value: 0x7f070165
+			public const int Booking_System_Splash = 2131165541;
 			
 			// aapt resource value: 0x7f07015b
 			public const int Booking_System_Theme = 2131165531;

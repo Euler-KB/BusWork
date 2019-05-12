@@ -73,6 +73,8 @@ namespace BookingSystem.Android.API
     {
         private string _baseUrl;
         private string _apiKey;
+        private Task _restoreTask;
+        private bool _isRestoring = false;
 
         private HttpClient httpClient;
 
@@ -154,7 +156,10 @@ namespace BookingSystem.Android.API
             this._apiKey = apiKey;
 
             //  
-            httpClient = new HttpClient(this);
+            httpClient = new HttpClient(this)
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -199,7 +204,11 @@ namespace BookingSystem.Android.API
 
         public async Task<LoginStatusResponse> LoginAsync(string emailOrUsername, string password)
         {
+            // Wait for restore to complete
+            await EnsureRestoreComplete();
+
             var result = new LoginStatusResponse();
+
             var response = await ExecuteAsync(AccountEndpoints.Login(emailOrUsername, password));
             if (response.Successful)
             {
@@ -260,8 +269,18 @@ namespace BookingSystem.Android.API
             return Task.FromResult(true);
         }
 
-        public async Task<bool> RestoreAsync(AuthenticationInfo authInfo, bool updateUser = false)
+        private async Task EnsureRestoreComplete()
         {
+            if (_isRestoring)
+            {
+                await _restoreTask;
+            }
+        }
+
+        public bool RestoreAsync(AuthenticationInfo authInfo, bool updateUser = false)
+        {
+            if (_isRestoring)
+                return true;
 
             if (authInfo == null || authInfo.AccessToken == null || authInfo.RefreshToken == null)
                 return false;
@@ -269,23 +288,32 @@ namespace BookingSystem.Android.API
             //  set authentication info
             this.authInfo = authInfo;
 
-            //  validate auth info
-            if (NeedTokenRefresh)
-            {
-                if (!await RefreshTokenAsync())
-                {
-                    return false;
-                }
-
-                updateUser = true;
-            }
-
-            //  update current user
-            if (updateUser || authInfo.User == null)
-                await UpdateUserInfoAsync();
-
             //
             OnLogin?.Invoke(this, this.authInfo);
+            
+            //
+            _restoreTask = Task.Run(async () =>
+            {
+                _isRestoring = true;
+
+                //  validate auth info
+                if (NeedTokenRefresh)
+                {
+                    //  Refresh token
+                    await RefreshTokenAsync();
+
+                    updateUser = true;
+                }
+
+                //  update current user
+                if (updateUser || (authInfo != null && authInfo.User == null))
+                    await UpdateUserInfoAsync();
+
+                //
+                _isRestoring = false;
+
+            });
+
 
             return true;
         }
@@ -310,22 +338,29 @@ namespace BookingSystem.Android.API
         public async Task<UserInfo> UpdateUserInfoAsync()
         {
 
-            var response = await InternalExecute(new HttpRequestMessage(HttpMethod.Get, $"{this._baseUrl}/{AccountEndpoints.UserInfoUri}"));
-            if (response.IsSuccessStatusCode)
+            try
             {
-                //  get user from response body
-                var user = JsonConvert.DeserializeObject<UserInfo>((await response.Content.ReadAsStringAsync()));
-
-                //  update current authentication info
-                if (authInfo != null)
+                var response = await InternalExecute(new HttpRequestMessage(HttpMethod.Get, $"{this._baseUrl}/{AccountEndpoints.UserInfoUri}"));
+                if (response.IsSuccessStatusCode)
                 {
-                    authInfo.User = user;
+                    //  get user from response body
+                    var user = JsonConvert.DeserializeObject<UserInfo>((await response.Content.ReadAsStringAsync()));
 
-                    OnUserUpdated?.Invoke(this, authInfo);
+                    //  update current authentication info
+                    if (IsAuthenticated)
+                    {
+                        authInfo.User = user;
+
+                        OnUserUpdated?.Invoke(this, authInfo);
+                    }
+
+
+                    return user;
                 }
+            }
+            catch
+            {
 
-
-                return user;
             }
 
 
@@ -334,18 +369,32 @@ namespace BookingSystem.Android.API
 
         public async Task<bool> RefreshTokenAsync()
         {
-            //
-            var request = AccountEndpoints.RefreshAccessToken(authInfo.RefreshToken).GetRequstAsync(httpClient.BaseAddress).Result;
-            var response = await InternalExecute(request);
-            if (!response.IsSuccessStatusCode)
-                return false;
+            try
+            {
+                //
+                var request = AccountEndpoints.RefreshAccessToken(authInfo.RefreshToken).GetRequstAsync(httpClient.BaseAddress).Result;
+                var response = await InternalExecute(request);
+                if (!response.IsSuccessStatusCode)
+                    return false;
 
-            var payload = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
-            authInfo.LoginInfo = payload;
-            //
-            OnRefreshToken?.Invoke(this, authInfo);
+                var payload = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+                if (IsAuthenticated)
+                {
+                    authInfo.LoginInfo = payload;
 
-            return true;
+                    //
+                    OnRefreshToken?.Invoke(this, authInfo);
+
+                    return true;
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -362,12 +411,12 @@ namespace BookingSystem.Android.API
             }
         }
 
-        private Task<HttpResponseMessage> InternalExecute(HttpRequestMessage request, CancellationToken? cancellationToken = null)
+        private async Task<HttpResponseMessage> InternalExecute(HttpRequestMessage request, CancellationToken? cancellationToken = null)
         {
             if (cancellationToken == null)
-                return httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+                return await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
             else
-                return httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken.Value);
+                return await httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken.Value);
         }
 
         /// <summary>
@@ -388,6 +437,9 @@ namespace BookingSystem.Android.API
         /// <param name="cancellationToken">The cancellation token for the request</param>
         public async Task<ApiResponse> ExecuteAsync(IEndpoint endpoint, CancellationToken? cancellationToken = null)
         {
+            //  Ensure restore is completed
+            await EnsureRestoreComplete();
+
             try
             {
                 if (endpoint.RequireAuth && !this.IsAuthenticated)
@@ -438,6 +490,11 @@ namespace BookingSystem.Android.API
 #endif
                 //  Execute request
                 return new ApiResponse(response, endpoint);
+            }
+            catch (TaskCanceledException)
+            {
+                return new ApiResponse(new HttpRequestException("Request timed out", 
+                    new System.Net.WebException("Request timed out", System.Net.WebExceptionStatus.Timeout) ), endpoint);
             }
             catch (HttpRequestException ex)
             {

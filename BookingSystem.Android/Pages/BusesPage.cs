@@ -125,19 +125,23 @@ namespace BookingSystem.Android.Pages
             var response = await proxy.ExecuteAsync(API.Endpoints.BusesEndpoints.GetAll());
             if (response.Successful)
             {
-                buses = await response.GetDataAsync<IList<BusInfo>>();
-                busAdapter.Items = FilterBuses(buses, searchQuery).ToList();
+                if(IsActivePage)
+                {
+                    buses = await response.GetDataAsync<IList<BusInfo>>();
+                    busAdapter.Items = FilterBuses(buses, searchQuery).ToList();
 
-                //
-                UpdateEmptyLayout();
+                    //
+                    UpdateEmptyLayout();
 
-                //  Mark view loaded
-                SetLoaded(buses);
+                    //  Mark view loaded
+                    SetLoaded(buses);
+                }
+
             }
             else
             {
                 if (IsLoaded)
-                    Toast.MakeText(Activity, response.GetErrorDescription(), ToastLength.Short).Show();
+                    ShowApiError(response);
                 else
                     UpdateResponse(response);
             }
